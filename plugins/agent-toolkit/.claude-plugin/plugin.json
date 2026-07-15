@@ -1,0 +1,9 @@
+{
+  "name": "agent-toolkit",
+  "description": "General engineering toolkit: Jira, OpenAPI, Mermaid, database schema, README craft, design system, dependency updates. 43 utility skills.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": ["jira", "openapi", "diagrams", "documentation", "toolkit"],
+  "skills": "./skills",
+  "commands": "./commands"
+}

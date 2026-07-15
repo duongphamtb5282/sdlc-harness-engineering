@@ -1,0 +1,8 @@
+{
+  "name": "stack-azure",
+  "description": "191 Azure service skills: AKS, App Service, Blob Storage, Key Vault, PostgreSQL, Redis, AD, and more. Load on demand per service.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": ["azure", "aks", "terraform", "azurerm", "cloud"],
+  "skills": "./skills"
+}

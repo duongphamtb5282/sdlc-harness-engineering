@@ -1,0 +1,27 @@
+# Security Engineer — specialist skill registry
+
+agent: security-engineer
+base_path: skills/_shared/specialist-skills
+
+references_path: agents/security-engineer/references
+
+always_load:
+  - software-engineering/security-practices
+
+stack_plugins:
+  map: plugins/AGENT-SKILL-MAP.yaml
+  protocol: skills/_shared/protocols/stack-skill-loading.md
+  workflows: [sdlc-workflows/security-and-hardening]
+  aws: [stack-aws/core-skills/aws-iam]
+  azure: [stack-azure/azure-key-vault, stack-azure/azure-policy]
+
+reference_guides:
+  - security-auditor-perspective.md
+
+conditional:
+  - reference: security-auditor-perspective.md
+    when: security review OR /ship security-auditor perspective OR owasp audit scope
+  - skill: software-engineering/reliability-engineering
+    when: availability OR incident OR slo compliance
+  - skill: development-stacks/cloud-platforms
+    when: cloud security OR iam OR network policies

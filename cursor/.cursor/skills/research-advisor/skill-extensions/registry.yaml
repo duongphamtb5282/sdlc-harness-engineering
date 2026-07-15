@@ -1,0 +1,21 @@
+# Research Advisor — specialist skill registry
+
+agent: research-advisor
+base_path: skills/_shared/specialist-skills
+
+always_load: []
+
+stack_plugins:
+  map: plugins/AGENT-SKILL-MAP.yaml
+  protocol: skills/_shared/protocols/stack-skill-loading.md
+  workflows: [sdlc-workflows/context-engineering, sdlc-workflows/idea-refine, sdlc-workflows/using-agent-skills]
+  toolkit: [agent-toolkit/c4-architecture, agent-toolkit/naming-analyzer]
+  system_design: [system-design/system-design, system-design/requirements-scoping, system-design/back-of-the-envelope, system-design/scaling-evolution]
+
+conditional:
+  - skill: tools-integrations/analyze-repo
+    when: reverse OR discover OR brownfield OR analyze codebase
+  - skill: domain-applications/application-patterns
+    when: ideate OR greenfield exploration
+  - skill: software-design/system-design
+    when: architecture research OR scale questions

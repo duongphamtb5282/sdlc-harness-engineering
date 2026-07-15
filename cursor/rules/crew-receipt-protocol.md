@@ -1,0 +1,103 @@
+<!-- sdlc-automation-agent-id: 2061339c42e4c668 -->
+---
+paths:
+  - ".sdlc-automation-agent/**"
+---
+
+# Receipt Protocol — Proof of Completion
+
+Every agent that completes a task in the sdlc-automation-agent pipeline MUST write a JSON receipt. Receipts are the authoritative record of what was built, by whom, and verified how.
+
+---
+
+## Receipt Schema
+
+Write to `.sdlc-automation-agent/.orchestrator/receipts/<story-id>-<role-abbrev>.json`:
+
+```json
+{ 
+  "story_id": "US-042",
+  "role": "software-engineer", 
+  "backend": "claude",
+  "model": "claude-sonnet-4-6",
+  "artifacts": [
+    "services/user-service/src/user.service.ts",
+    "services/user-service/src/user.controller.ts",
+    "services/user-service/src/user.repository.ts"
+  ],
+  "metrics": {
+    "files_created": 12,
+    "lines_written": 2847,
+    "endpoints_implemented": 8,
+    "services_completed": 2 
+  },
+  "verification_commands": [
+    "npx tsc --noEmit",
+    "test -s services/user-service/src/user.service.ts" 
+  ],  
+  "completed_at": "2025-01-15T14:32:00Z"
+}
+```
+
+## Required Fields 
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `story_id` | Yes | Story or ticket ID (e.g., `US-042`, `TICKET-007`) |
+| `role` | Yes | Agent role name (e.g., `software-engineer`, `quality-engineer`) |
+| `backend` | Yes | AI backend used: `claude`, `codex`, `gemini`, `opencode` |
+| `model` | Yes | Specific model identifier (e.g., `claude-sonnet-4-6`) |
+| `artifacts` | Yes | Array of file paths created or modified |
+| `metrics` | Yes | At least one numeric metric |
+| `verification_commands` | Yes | Commands proving the work (strings or `{command, exit_code, summary}` objects) |
+| `completed_at` | Yes | ISO 8601 UTC timestamp |
+
+## Write-After-Verify Pattern
+
+Never write a receipt before verifying the work: 
+
+1. Complete the task
+2. Verify artifacts exist on disk (use Glob or Read to confirm) 
+3. Verify the output is correct (compile check, test run, or manual inspection)
+4. Write the receipt with the verification result
+
+```python
+# Verify first 
+artifacts = Glob("services/user-service/src/*.ts")
+assert len(artifacts) > 0, "No artifacts found" 
+
+# Then write receipt
+Write(".sdlc-automation-agent/.orchestrator/receipts/US-042-se.json", json.dumps({
+  "story_id": "US-042",  
+  "role": "software-engineer",  
+  "backend": "claude",
+  "model": "claude-sonnet-4-6",
+  "artifacts": artifacts,
+  "metrics": {"files_created": len(artifacts)}, 
+  "verification_commands": ["npx tsc --noEmit"], 
+  "completed_at": datetime.utcnow().isoformat() + "Z" 
+}))
+```
+
+## Remediation Chain
+
+If a review agent (QE, CE, or CR) finds issues that require fixes:
+
+1. The review agent writes a receipt listing findings in the `findings` field
+2. The orchestrator creates remediation tasks for the original SE agent
+3. After fixes, the SE agent writes a new receipt with the `fixes` field referencing resolved finding IDs
+4. The review agent re-scans and writes a verification receipt confirming resolution
+5. If issues persist after 2 cycles, escalate to user via AskUserQuestion
+
+## Receipt Naming Convention
+
+**Story-scoped naming:**
+``` 
+US-042-se.json              ← SE implementation receipt for story US-042 
+US-042-qe.json              ← QE testing receipt
+US-042-cr.json              ← CR review receipt
+US-042-ce.json              ← CE security audit receipt (if triggered) 
+TICKET-007-se.json          ← Kanban ticket receipt
+```
+
+Role abbreviations: `se` (Software Engineer), `qe` (Quality Engineer), `cr` (Code Reviewer), `ce` (Compliance Engineer), `po` (Product Owner), `sa` (Solution Architect), `pe` (Platform Engineer), `tw` (Technical Writer), `ra` (Research Advisor).

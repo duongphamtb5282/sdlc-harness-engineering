@@ -1,0 +1,6 @@
+# Never index reference shelves or secrets
+new-skills/
+**/.env
+**/.env.*
+**/node_modules/
+**/.git/

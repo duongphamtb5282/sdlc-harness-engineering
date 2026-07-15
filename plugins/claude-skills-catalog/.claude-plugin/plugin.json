@@ -1,0 +1,19 @@
+{
+  "name": "claude-skills-catalog",
+  "description": "66 extended role skills (Spring Boot, FastAPI, Terraform, Vue, etc.) synced from claude-skills. Load on demand via stack-skill-loading or explicit Read.",
+  "version": "1.1.0",
+  "author": {
+    "name": "Upstream: claude-skills (synced via scripts/sync-from-new-skills.sh)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "spring-boot",
+    "fastapi",
+    "typescript",
+    "terraform",
+    "kubernetes",
+    "microservices",
+    "specialist"
+  ],
+  "skills": "./skills"
+}

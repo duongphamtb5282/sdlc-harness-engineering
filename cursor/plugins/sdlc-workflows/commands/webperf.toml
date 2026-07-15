@@ -1,0 +1,35 @@
+description = "Run a web performance audit using the canonical Code Reviewer performance reference"
+
+prompt = """
+/webperf targets web applications specifically. Do not use it for utility libraries, CLIs, or server-only code with no browser-facing output.
+
+## Determine the mode
+
+Deep mode — activate when any of these is available:
+- A Lighthouse JSON report file
+- A PageSpeed Insights JSON response
+- A CrUX API response
+- A DevTools performance trace
+- A live URL plus chrome-devtools MCP
+- Chrome DevTools MCP CLI output
+
+Quick mode — default when none of the above are available. Scan source for structural anti-patterns; label findings as `potential impact`.
+
+## Run the audit
+
+Load and follow:
+- `${CLAUDE_PLUGIN_ROOT}/agents/code-reviewer/references/web-performance-auditor.md`
+- Optionally `${CLAUDE_PLUGIN_ROOT}/plugins/stack-frontend/skills/react-best-practices/SKILL.md` for React/Next.js changes
+
+Use `Agent()` with the Code Reviewer role if subagents are available; otherwise run in the main session.
+
+Pass explicitly:
+- Files, components, or diff under review
+- Artifact paths or pasted JSON
+- Target URL when known
+- Expected mode (Quick or Deep)
+
+Return the full audit report. No merge step — single-persona command.
+
+Do **not** spawn a duplicate `web-performance-auditor` plugin subagent from `plugins/sdlc-workflows/reference/agents/`. See `skills/_shared/protocols/agent-separation.md`.
+"""

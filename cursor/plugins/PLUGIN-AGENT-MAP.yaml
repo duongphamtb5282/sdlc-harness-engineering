@@ -1,0 +1,107 @@
+# Plugin upstream agents → canonical SDLC runtime
+# Rule: plugins MUST NOT expose delivery-role agents via plugin.json "agents".
+# Canonical delivery agents: agents/{role}/ only (registered via root claude-agents/).
+#
+# new-skills/ is maintainer reference only — never loaded at runtime.
+
+version: "1.0"
+
+canonical:
+  delivery_agents: agents/
+  claude_code_stubs: claude-agents/
+  orchestrator: skills/sdlc-automation-agent/
+  plugin_skills: plugins/*/skills/
+  quarantine: plugins/*/reference/agents/
+
+# ---------------------------------------------------------------------------
+# Absorbed into agents/*/references/ (wave-loaded by registry.yaml)
+# ---------------------------------------------------------------------------
+
+absorbed:
+
+  - source: plugins/sdlc-workflows/reference/agents/code-reviewer.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/general-review-framework.md
+    used_by: [code-reviewer, sdlc-workflows/commands/ship.toml]
+
+  - source: plugins/sdlc-workflows/reference/agents/test-engineer.md
+    canonical_agent: quality-engineer
+    reference: agents/quality-engineer/references/test-engineer-perspective.md
+    used_by: [quality-engineer, sdlc-workflows/commands/ship.toml]
+
+  - source: plugins/sdlc-workflows/reference/agents/security-auditor.md
+    canonical_agent: security-engineer
+    reference: agents/security-engineer/references/security-auditor-perspective.md
+    used_by: [security-engineer, compliance-engineer, sdlc-workflows/commands/ship.toml]
+
+  - source: plugins/sdlc-workflows/reference/agents/web-performance-auditor.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/web-performance-auditor.md
+    used_by: [code-reviewer, quality-engineer, sdlc-workflows/commands/webperf.toml]
+
+  - source: plugins/stack-frontend/reference/agents/nextjs-reviewer.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/nextjs-reviewer.md
+
+  - source: plugins/stack-frontend/reference/agents/e2e-tester.md
+    canonical_agent: quality-engineer
+    reference: agents/quality-engineer/references/e2e-tester-perspective.md
+
+  - source: plugins/delivery-toolkit/pr-review-toolkit/reference/agents/silent-failure-hunter.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/silent-failure-hunter.md
+    status: merged
+
+  - source: plugins/delivery-toolkit/pr-review-toolkit/reference/agents/type-design-analyzer.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/type-design-analyzer.md
+    status: merged
+
+  - source: plugins/delivery-toolkit/pr-review-toolkit/reference/agents/code-simplifier.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/code-simplifier.md
+    status: merged
+
+  - source: plugins/delivery-toolkit/pr-review-toolkit/reference/agents/pr-test-analyzer.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/pr-test-analyzer.md
+    status: merged
+
+  - source: plugins/delivery-toolkit/pr-review-toolkit/reference/agents/comment-analyzer.md
+    canonical_agent: code-reviewer
+    reference: agents/code-reviewer/references/comment-analyzer.md
+    status: merged
+
+# ---------------------------------------------------------------------------
+# Reference only — optional alt workflows (not SDLC delivery roles)
+# ---------------------------------------------------------------------------
+
+reference_only:
+
+  - source: plugins/system-design/reference/agents/system-design-orchestrator.md
+    note: Optional HLD workflow; use system-design skills + SA agent instead of subagent picker
+
+  - source: plugins/staff-engineer/reference/agents/peer-reviewer-agent.md
+    note: Optional staff-engineer workflow — alternative to 13-agent SDLC
+
+# ---------------------------------------------------------------------------
+# Skill name disambiguation (SDLC agents vs catalog skills)
+# ---------------------------------------------------------------------------
+# SDLC delivery agents (agents/{role}/) use short names: devops, code-reviewer.
+# Stack catalog skills (plugins/claude-skills-catalog/) use distinct IDs:
+#   devops-engineer, code-reviewer (general-purpose catalog — not the SDLC agent).
+# Orchestrator always dispatches agents/{role}/SKILL.md — never catalog homonyms.
+
+  - source: plugins/delivery-toolkit/feature-dev/reference/agents/*
+    note: Feature-dev exploration; use sdlc-automation-agent Build mode or SE agent
+
+  - source: plugins/delivery-toolkit/plugin-dev/reference/agents/*
+    note: Meta — plugin authoring only
+
+# ---------------------------------------------------------------------------
+# Skill-internal agents (NOT quarantined — not Claude Code plugin agents)
+# ---------------------------------------------------------------------------
+
+skill_internal:
+  - plugins/stack-frontend/skills/skill-creator/agents/
+    note: Eval harness for skill-creator skill only

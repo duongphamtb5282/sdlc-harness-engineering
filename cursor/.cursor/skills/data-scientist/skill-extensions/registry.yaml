@@ -1,0 +1,14 @@
+# Data Scientist — specialist skill registry
+
+agent: data-scientist
+base_path: skills/_shared/specialist-skills
+
+always_load:
+  - development-stacks/ai-ml-integration
+
+stack_plugins:
+  map: plugins/AGENT-SKILL-MAP.yaml
+  protocol: skills/_shared/protocols/stack-skill-loading.md
+  ai-ml: [stack-frontend/ai-app, stack-frontend/ai-sdk-6, stack-frontend/postgres-semantic-search]
+
+conditional:

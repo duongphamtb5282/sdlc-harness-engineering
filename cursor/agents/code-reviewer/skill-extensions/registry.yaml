@@ -1,0 +1,68 @@
+# Code Reviewer — specialist skill registry
+
+agent: code-reviewer
+base_path: skills/_shared/specialist-skills
+
+always_load:
+  - software-engineering/code-quality
+
+references_path: agents/code-reviewer/references
+
+wave_map:
+  spec_compliance: []
+  architecture:
+    - software-design/architecture-patterns
+  code_quality:
+    - software-engineering/code-quality
+  performance:
+    - software-engineering/performance-optimization
+  test_quality: []
+
+wave_reference_map:
+  spec_compliance: [spec-compliance-review.md, review-checklist.md]
+  architecture: [review-checklist.md, general-review-framework.md]
+  code_quality: [silent-failure-hunter.md, code-simplifier.md, type-design-analyzer.md, common-issues.md, feedback-examples.md, general-review-framework.md]
+  performance: [common-issues.md, web-performance-auditor.md]
+  test_quality: [pr-test-analyzer.md, report-template.md]
+  nextjs: [nextjs-reviewer.md, web-performance-auditor.md]
+
+reference_guides:
+  - silent-failure-hunter.md
+  - pr-test-analyzer.md
+  - type-design-analyzer.md
+  - code-simplifier.md
+  - review-checklist.md
+  - common-issues.md
+  - feedback-examples.md
+  - report-template.md
+  - spec-compliance-review.md
+  - general-review-framework.md
+  - web-performance-auditor.md
+  - nextjs-reviewer.md
+
+stack_plugins:
+  map: plugins/AGENT-SKILL-MAP.yaml
+  protocol: skills/_shared/protocols/stack-skill-loading.md
+  workflows: [sdlc-workflows/code-review-and-quality, sdlc-workflows/code-simplification, sdlc-workflows/security-and-hardening]
+  delivery: [delivery-toolkit/pr-review-toolkit, delivery-toolkit/code-review, delivery-toolkit/security-guidance]
+  react: [stack-frontend/react-best-practices, stack-frontend/web-design-guidelines, stack-frontend/composition-patterns]
+  nextjs: [stack-frontend/next-best-practices, stack-frontend/react-view-transitions, stack-frontend/web-design-guidelines]
+  react-native: [stack-frontend/react-native-skills]
+  go: [stack-golang/golang-code-style, stack-golang/golang-lint]
+  java:
+    - stack-spring/java-code-review
+    - stack-spring/architecture-review
+    - stack-spring/api-contract-review
+    - stack-spring/jpa-patterns
+    - stack-spring/concurrency-review
+    - stack-spring/performance-smell-detection
+    - stack-spring/security-audit
+    - stack-spring/test-quality
+
+conditional:
+  - skill: software-engineering/security-practices
+    when: security-sensitive diff OR auth OR pii — findings only; CE owns formal OWASP audit
+  - reference: comment-analyzer.md
+    when: large PR with many inline comments
+  - reference: receiving-feedback.md
+    when: responding to prior review feedback OR remediation verification mode

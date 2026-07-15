@@ -1,0 +1,8 @@
+{
+  "name": "stack-aws",
+  "description": "AWS agent skills: IAM, ECS, Lambda, CDK, CloudFormation, Bedrock, observability, databases, networking. 52 skills from AWS agent toolkit.",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "keywords": ["aws", "terraform", "ecs", "lambda", "cdk", "bedrock", "cloud"],
+  "skills": "./skills"
+}

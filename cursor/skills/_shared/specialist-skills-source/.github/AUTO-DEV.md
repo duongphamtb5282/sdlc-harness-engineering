@@ -1,0 +1,300 @@
+# 🤖 Auto-Dev System
+
+> Human-in-the-Loop 自動化開發系統
+>
+> 使用 [claude-code-action](https://github.com/anthropics/claude-code-action) 官方 GitHub Action
+
+## 快速安裝
+
+### 方式 1: API Key
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/miles990/claude-software-skills/main/scripts/setup-auto-dev-apikey.sh | bash
+```
+
+安裝後：
+1. 到 https://console.anthropic.com/settings/keys 取得 API Key
+2. 設定 GitHub Secret：`ANTHROPIC_API_KEY`
+
+### 方式 2: Claude Max（推薦）
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/miles990/claude-software-skills/main/scripts/setup-auto-dev-max.sh | bash
+```
+
+安裝後：
+```bash
+claude /install-github-app
+```
+這會自動設定 `CLAUDE_CODE_OAUTH_TOKEN`（費用包含在 Max 訂閱中）
+
+---
+
+## 比較
+
+| 方式 | 費用 | 設定難度 | 適合 |
+|------|------|----------|------|
+| API Key | 用量計費 | 簡單 | 一般開發者 |
+| Claude Max | 訂閱包含 | 需安裝 App | Max 訂閱用戶 |
+
+---
+
+## 概述
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Auto-Dev 架構                            │
+│                                                                 │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐       │
+│  │   Issue     │     │   GitHub    │     │   Claude    │       │
+│  │  + Label    │────→│   Actions   │────→│    Code     │       │
+│  │  auto-dev   │     │             │     │  + Evolve   │       │
+│  └─────────────┘     └──────┬──────┘     └──────┬──────┘       │
+│                             │                    │              │
+│                             ↓                    ↓              │
+│                      ┌─────────────┐     ┌─────────────┐       │
+│                      │     PR      │←────│   程式碼    │       │
+│                      │   Review    │     │   變更      │       │
+│                      └──────┬──────┘     └─────────────┘       │
+│                             │                                   │
+│               ┌─────────────┼─────────────┐                    │
+│               ↓             ↓             ↓                    │
+│         ┌─────────┐   ┌─────────┐   ┌─────────┐               │
+│         │  Merge  │   │ /evolve │   │  Close  │               │
+│         │   ✅    │   │   ✏️    │   │   ❌    │               │
+│         └────┬────┘   └────┬────┘   └────┬────┘               │
+│              │             │             │                     │
+│              ↓             ↓             ↓                     │
+│         ┌─────────┐   ┌─────────┐   ┌─────────┐               │
+│         │ 記錄成功 │   │繼續迭代 │   │ 記錄失敗│               │
+│         │  經驗   │   │         │   │  教訓   │               │
+│         └─────────┘   └─────────┘   └─────────┘               │
+│                             │                                   │
+│              .claude/memory/ ← 累積經驗                        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 快速開始
+
+### 1. 設定 Secrets
+
+在 Repository Settings → Secrets and variables → Actions 加入：
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### 2. 建立 Issue 觸發自動開發
+
+```markdown
+Title: 實作用戶登入功能
+
+Body:
+需求：
+- Email + 密碼登入
+- JWT Token 驗證
+- 記住我功能
+
+驗收標準：
+- 登入成功返回 token
+- 錯誤時顯示適當訊息
+- 有單元測試
+```
+
+然後加上 `auto-dev` label。
+
+### 3. 等待 PR
+
+Bot 會自動：
+1. 建立分支
+2. 執行 Claude Code + Evolve
+3. 提交程式碼
+4. 建立 PR
+
+### 4. 審查與互動
+
+#### ✅ 滿意 → 直接合併
+系統會自動記錄成功經驗
+
+#### ✏️ 需要調整 → 留言
+```
+/evolve 不要用 session，改用 JWT，另外加上 refresh token
+```
+Bot 會繼續在同一個 PR 上迭代
+
+#### ➕ 發現新需求 → 開新 Issue
+加上 `auto-dev` label，會自動加入佇列
+
+#### ❌ 完全不行 → 關閉 PR
+系統會記錄失敗經驗，避免重蹈覆轍
+
+---
+
+## 觸發方式
+
+### 方式 1: Issue Label（推薦）
+
+1. 建立 Issue 描述目標
+2. 加上 `auto-dev` label
+3. 可選：加上 `priority:high` / `priority:low`
+
+### 方式 2: Comment 命令
+
+在任何 Issue 或 PR 上：
+```
+/evolve 實作 XXX 功能
+
+可選參數：
+--priority=high
+--max-iterations=15
+```
+
+### 方式 3: 手動觸發
+
+Actions → Auto Development → Run workflow
+
+---
+
+## Labels 說明
+
+| Label | 說明 |
+|-------|------|
+| `auto-dev` | 觸發自動開發 |
+| `🤖 auto-dev` | 由 bot 建立的 PR |
+| `priority:high` | 高優先級（佇列優先處理） |
+| `priority:low` | 低優先級 |
+| `⏳ processing` | 正在處理中 |
+| `needs-review` | 等待人類審查 |
+
+---
+
+## 記憶系統
+
+所有經驗都儲存在 `.claude/memory/`：
+
+```
+.claude/memory/
+├── index.md              # 快速索引
+├── learnings/            # 成功經驗
+│   └── 2025-01-05-user-login.md
+├── failures/             # 失敗教訓
+│   └── 2025-01-04-oauth-attempt.md
+├── decisions/            # 技術決策
+├── patterns/             # 推理模式
+└── strategies/           # 策略記錄
+```
+
+### 經驗會被學習
+
+```markdown
+# 範例：learnings/2025-01-05-jwt-preference.md
+
+## 情境
+實作認證功能
+
+## 人類 Feedback
+「不要用 session，這個專案統一用 JWT」
+
+## 學到的偏好
+- 此專案的認證策略：JWT only
+
+## 影響
+未來所有 auth 相關任務優先選擇 JWT
+```
+
+---
+
+## 工作流程檔案
+
+| 檔案 | 功能 |
+|------|------|
+| `auto-dev.yml` | 主要執行流程 |
+| `auto-dev-feedback.yml` | 處理審查 feedback |
+| `auto-dev-queue.yml` | 任務佇列管理（每小時） |
+
+---
+
+## 配置選項
+
+### 調整最大執行時間
+
+```yaml
+# auto-dev.yml
+timeout-minutes: 60  # 預設 1 小時
+```
+
+### 調整最大迭代次數
+
+```yaml
+# 透過 label 或 command 參數
+/evolve --max-iterations=20 實作 XXX
+```
+
+### 調整佇列處理頻率
+
+```yaml
+# auto-dev-queue.yml
+schedule:
+  - cron: '0 */2 * * *'  # 改為每 2 小時
+```
+
+---
+
+## 安全注意事項
+
+1. **API Key 保護**
+   - 使用 GitHub Secrets
+   - 不要在程式碼中硬編碼
+
+2. **執行限制**
+   - 設定合理的 timeout
+   - 設定最大迭代次數
+   - 監控 API 使用量
+
+3. **審查 Gate**
+   - 所有變更都需要 PR
+   - 建議開啟 Branch Protection
+   - 重要分支要求 approval
+
+4. **成本控制**
+   - 監控 Anthropic API 費用
+   - 設定 budget alerts
+   - 考慮使用較便宜的模型做初步工作
+
+---
+
+## 常見問題
+
+### Q: 執行失敗怎麼辦？
+A: 檢查 Actions log，常見原因：
+- API Key 無效
+- 目標描述不夠明確
+- 達到迭代上限
+
+### Q: 如何停止執行中的任務？
+A: 到 Actions 頁面 Cancel workflow run
+
+### Q: PR 太大怎麼辦？
+A: 將目標拆分成更小的 Issues
+
+### Q: 如何讓 bot 記住我的偏好？
+A: 在 PR review 時明確說明，bot 會記錄到 memory
+
+---
+
+## 整合 GitHub Copilot
+
+由於記憶存在 `.claude/memory/`，GitHub Copilot 也能讀取：
+
+```
+.github/
+├── copilot/              # Copilot 設定
+│   └── instructions.md   # 可引用 memory
+└── memory/               # 共享記憶
+    └── ...
+```
+
+在 `instructions.md` 中：
+```markdown
+參考 .claude/memory/ 了解專案偏好和過去經驗
+```

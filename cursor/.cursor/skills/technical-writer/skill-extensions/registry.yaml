@@ -1,0 +1,20 @@
+# Technical Writer — specialist skill registry
+
+agent: technical-writer
+base_path: skills/_shared/specialist-skills
+
+always_load:
+  - software-engineering/documentation
+
+stack_plugins:
+  map: plugins/AGENT-SKILL-MAP.yaml
+  protocol: skills/_shared/protocols/stack-skill-loading.md
+  workflows: [sdlc-workflows/documentation-and-adrs]
+  toolkit: [agent-toolkit/crafting-effective-readmes, agent-toolkit/mermaid-diagrams, agent-toolkit/openapi-to-typescript]
+  frontend: [stack-frontend/writing-guidelines]
+
+conditional:
+  - skill: tools-integrations/api-tools
+    when: api reference phase OR openapi docs
+  - skill: software-design/api-design
+    when: documenting API contracts OR rest conventions

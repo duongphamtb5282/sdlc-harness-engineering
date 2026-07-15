@@ -1,0 +1,88 @@
+# .sdlc-automation-agent.yaml — project config template
+# Init mode fills {{PLACEHOLDERS}} from auto-detection. Do not commit secrets here.
+
+build_mode: scrum  # scrum | kanban
+
+project:
+  name: "{{PROJECT_NAME}}"
+  slug: "{{PROJECT_SLUG}}"
+  type: greenfield  # greenfield | brownfield | evolved_brownfield | mixed
+  language: "{{LANGUAGE}}"       # java | python | typescript | go | ...
+  framework: "{{FRAMEWORK}}"     # spring-boot | nestjs | fastapi | nextjs | ...
+  architecture: monolith         # monolith | microservices | monorepo
+  domain: null                   # saas | ecommerce | null — drives specialist skill overlays
+
+# Machine-readable stack (SA phase 3 also writes docs/architecture/tech-stack.yaml)
+packs:
+  language: "{{PACK_LANGUAGE}}"  # java-spring | nodejs-nestjs | python-fastapi | go | null
+  cloud: "{{PACK_CLOUD}}"        # aws | azure | gcp | null
+  frontend: "{{PACK_FRONTEND}}"  # react | nextjs | null
+
+# Specialist skill registry keys (resolved via agents/*/skill-extensions/registry.yaml)
+language_map:
+  primary: "{{LANGUAGE}}"        # maps to skills/_shared/specialist-skills/programming-languages/*
+
+quality:
+  coverage_minimum: 80
+  complexity_max: 10
+  duplication_max_percent: 5
+
+verify:
+  lint: "{{VERIFY_LINT}}"
+  test: "{{VERIFY_TEST}}"
+  build: "{{VERIFY_BUILD}}"
+  typecheck: null
+
+paths:
+  requirements: docs/requirements
+  architecture: docs/architecture
+  api_contracts: api
+  sad: docs/architecture
+
+dod:
+  file: ""
+  inline:
+    - text: "All acceptance criteria met"
+      critical: true
+    - text: "Tests pass (verify.test)"
+      critical: true
+    - text: "Code review findings addressed or waived"
+      critical: false
+  story:
+    auto_check:
+      tests_pass: "verify.test exit 0"
+      build_pass: "verify.build exit 0"
+
+dor:
+  inline:
+    - text: "Story has clear acceptance criteria"
+    - text: "Dependencies identified"
+
+tracker:
+  type: github  # github | jira | teamwork | file
+  templates:
+    story: "docs/templates/story.md"
+    task: "docs/templates/task.md"
+    epic: "docs/templates/epic.md"
+    bug: "docs/templates/bug.md"
+
+parallelism:
+  max_concurrent_subagents: 3
+
+resilience:
+  story_retry_cap: 2
+
+features:
+  local_deploy_verification: true
+  spec_driven_requirements: true
+
+brownfield:
+  coverage_ratchet: false
+
+architecture:
+  health_check_interval: 3
+
+agents:
+  roles: {}  # optional per-role backend overrides — see backend-dispatch.md
+
+connections: {}

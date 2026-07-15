@@ -1,0 +1,31 @@
+# GitHub Actions — Java Spring (append to workflow or use as jobs template)
+# PE: merge verify commands from docs/architecture/tech-stack.yaml
+
+name: java-spring-ci
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - name: Lint & static analysis
+        run: ./gradlew checkstyleMain checkstyleTest
+      - name: Unit & integration tests
+        run: ./gradlew test
+      - name: Build artifact
+        run: ./gradlew bootJar
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*.jar

@@ -1,0 +1,29 @@
+# docs/architecture/tech-stack.yaml — machine-readable stack (SA Phase 3)
+# Human rationale lives in tech-stack.md. ALL agents read this file for packs + verify.
+
+language: java                    # java | typescript | python | go | ...
+runtime: "21"                     # JVM / Node / Python version
+framework: spring-boot            # spring-boot | nestjs | fastapi | ...
+build_tool: gradle                # gradle | maven | npm | ...
+test_runner: junit5               # junit5 | jest | pytest | go-test
+database: postgresql
+cache: redis                      # null if none
+cloud: aws
+region: ap-southeast-1
+deploy: ecs-fargate
+iac: terraform
+
+packs:
+  language: java-spring           # packs/languages/{id}
+  cloud: aws                      # packs/clouds/{id}
+  frontend: null
+
+verify:
+  lint: "./gradlew checkstyleMain checkstyleTest"
+  test: "./gradlew test"
+  build: "./gradlew bootJar"
+  typecheck: null                 # npx tsc --noEmit for TS projects
+
+quality:
+  coverage_minimum: 80
+  complexity_max: 10

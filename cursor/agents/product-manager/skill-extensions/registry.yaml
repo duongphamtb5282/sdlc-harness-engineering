@@ -1,0 +1,24 @@
+# Product Manager — specialist skill registry
+
+agent: product-manager
+base_path: skills/_shared/specialist-skills
+
+always_load:
+  - tools-integrations/project-management
+
+stack_plugins:
+  map: plugins/AGENT-SKILL-MAP.yaml
+  protocol: skills/_shared/protocols/stack-skill-loading.md
+  workflows: [sdlc-workflows/spec-driven-development, sdlc-workflows/planning-and-task-breakdown, sdlc-workflows/idea-refine]
+  toolkit: [agent-toolkit/jira, agent-toolkit/frontend-to-backend-requirements]
+  system_design: [system-design/requirements-scoping, system-design/back-of-the-envelope]
+
+conditional:
+  - skill: software-design/ux-principles
+    when: brd lens 2 users OR ui-heavy product
+  - skill: domain-applications/saas-platforms
+    when: project.domain == saas
+  - skill: domain-applications/e-commerce
+    when: project.domain == ecommerce
+  - skill: domain-applications/communication-systems
+    when: brd mentions notifications OR messaging

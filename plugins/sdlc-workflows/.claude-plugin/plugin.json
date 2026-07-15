@@ -1,0 +1,12 @@
+{
+  "name": "sdlc-workflows",
+  "description": "Addy Osmani SDLC workflow skills: TDD, spec-driven, incremental implementation, code review, security, observability, ADRs. 24 skills + review agents.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Addy Osmani"
+  },
+  "license": "MIT",
+  "keywords": ["sdlc", "tdd", "spec-driven", "code-review", "security"],
+  "skills": "./skills",
+  "commands": "./commands"
+}

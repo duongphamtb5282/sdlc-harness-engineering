@@ -1,0 +1,81 @@
+# Example: polyglot monorepo — Next.js frontend + Java Spring Boot backend + AWS
+# Place at: docs/architecture/tech-stack.yaml in your product repo
+# ALL agents read this file to select packs, plugins, and verify commands.
+
+profile: polyglot
+
+# Primary backend (for SA scaffold, default SE backend mode)
+language: java
+runtime: "21"
+framework: spring-boot
+build_tool: gradle
+test_runner: junit5
+
+# Frontend stack (SE frontend mode, QE browser tests)
+frontend:
+  language: typescript
+  framework: nextjs
+  runtime: "20"
+  router: app-router
+
+cloud: aws
+region: ap-southeast-1
+deploy: ecs-fargate
+iac: terraform
+
+# Pack IDs → packs/languages/* and packs/clouds/*
+packs:
+  language: java-spring       # backend conventions + verify
+  frontend: nextjs            # legacy tech-pack + stack-frontend plugins
+  cloud: aws
+
+# Where code lives — agents use paths to pick skills per task
+paths:
+  backend: apps/backend-java  # or services/billing-api/
+  frontend: apps/web-next     # must contain next.config.*
+  infra: infra/terraform/aws
+
+# Per-surface verify (agents run the block matching edited files)
+verify:
+  backend:
+    lint: "./apps/backend-java/gradlew -p apps/backend-java checkstyleMain"
+    test: "./apps/backend-java/gradlew -p apps/backend-java test"
+    build: "./apps/backend-java/gradlew -p apps/backend-java bootJar"
+  frontend:
+    lint: "npm run lint --prefix apps/web-next"
+    test: "npm test --prefix apps/web-next"
+    build: "npm run build --prefix apps/web-next"
+    typecheck: "npm exec tsc --noEmit -p apps/web-next"
+  infra:
+    validate: "terraform -chdir=infra/terraform/aws validate"
+    plan: "terraform -chdir=infra/terraform/aws plan"
+
+# Which Claude Code plugins must be installed for this profile
+plugins:
+  required:
+    - .                                    # sdlc-automation-agent (repo root)
+    - plugins/system-design
+    - plugins/stack-frontend
+    - plugins/stack-aws
+    - plugins/sdlc-workflows
+
+# Agent skill hints (resolved via plugins/AGENT-SKILL-MAP.yaml)
+stack_plugins:
+  backend: []               # optional: plugins/stack-spring (install for 19 Spring Boot skills)
+  frontend:
+    - stack-frontend/next-best-practices
+    - stack-frontend/react-best-practices
+    - stack-frontend/shadcn
+    - stack-frontend/react-view-transitions   # optional: page transitions
+    - stack-frontend/composition-patterns     # optional: component library refactors
+  cloud:
+    - stack-aws/core-skills/aws-containers
+    - stack-aws/core-skills/aws-iam
+    - stack-aws/core-skills/aws-cdk
+  architecture:
+    - system-design/system-design
+    - system-design/api-design
+    - system-design/data-storage
+
+quality:
+  coverage_minimum: 80
