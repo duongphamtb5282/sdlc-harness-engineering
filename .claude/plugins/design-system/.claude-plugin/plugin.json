@@ -1,0 +1,9 @@
+{
+  "name": "design-system",
+  "description": "UI/UX design skills — Figma MCP integration, design-to-code conversion, design tokens, component libraries, frontend design patterns.",
+  "version": "2.0.0",
+  "author": { "name": "Hano Engineering" },
+  "license": "MIT",
+  "keywords": ["figma", "design", "ui", "ux", "frontend", "design-system", "design-tokens"],
+  "skills": "./skills"
+}

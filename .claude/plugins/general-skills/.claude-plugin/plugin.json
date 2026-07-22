@@ -1,0 +1,7 @@
+{
+  "name": "general-skills",
+  "description": "General-purpose SDLC skills — code review, TDD, debugging, CI/CD, performance, security, planning, documentation, onboarding, and 16 more cross-cutting skills",
+  "version": "1.0.0",
+  "keywords": ["general", "sdlc", "cross-cutting", "onboarding"],
+  "skills": "./skills"
+}

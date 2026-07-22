@@ -1,0 +1,65 @@
+name: ai-ml-pipeline
+description: "AI/ML feature pipeline — experiment, train, evaluate, deploy"
+trigger_patterns:
+  - "ml model"
+  - "train"
+  - "fine-tune"
+  - "ai feature"
+  - "machine learning"
+
+stages:
+  - id: experiment-design
+    agent: data-scientist
+    model_tier: premium
+    gates:
+      - id: experiment-plan
+        type: manual
+        prompt: "Review experiment design before implementation"
+    outputs:
+      - "docs/ml/experiment-design.md"
+
+  - id: data-preparation
+    agent: data-scientist
+    model_tier: standard
+    depends_on: [experiment-design]
+    outputs:
+      - "data/**/*.py"
+
+  - id: training
+    agent: ai-ml-engineer
+    model_tier: premium
+    depends_on: [data-preparation]
+    gates:
+      - id: training-complete
+        type: automatic
+        condition: "metrics_acceptable"
+    outputs:
+      - "models/**/*"
+      - "mlflow/**/*"
+
+  - id: evaluation
+    agent: quality-engineer
+    model_tier: premium
+    depends_on: [training]
+    gates:
+      - id: eval-pass
+        type: automatic
+        condition: "evaluation_metrics > threshold"
+    outputs:
+      - "docs/ml/evaluation-report.md"
+
+  - id: deployment
+    agent: platform-engineer
+    model_tier: standard
+    depends_on: [evaluation]
+    outputs:
+      - "infra/ml/**/*.tf"
+      - ".github/workflows/ml-deploy.yml"
+
+estimated_cost:
+  experiment-design: "$3.00-5.00"
+  data-preparation: "$2.00-5.00"
+  training: "$5.00-15.00"
+  evaluation: "$3.00-5.00"
+  deployment: "$2.00-4.00"
+  total: "$15.00-34.00"

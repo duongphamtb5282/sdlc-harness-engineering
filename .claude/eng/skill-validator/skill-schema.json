@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SKILL.md Frontmatter Schema",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique skill identifier (kebab-case)"
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line summary of the skill's purpose"
+    },
+    "mcp_required": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "MCP servers required by this skill"
+    },
+    "mcp_optional": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional MCP servers"
+    },
+    "model_tier": {
+      "type": "string",
+      "enum": ["fast", "standard", "premium"],
+      "description": "Recommended model tier"
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "description": "Risk level for executing this skill"
+    }
+  }
+}

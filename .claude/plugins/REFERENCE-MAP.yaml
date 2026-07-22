@@ -1,0 +1,108 @@
+# Upstream reference (new-skills/) → canonical runtime path
+# Agents MUST use canonical paths only. See skills/_shared/protocols/reference-sources.md
+
+version: "1.0"
+
+reference_root: new-skills
+rule: "Do not load reference_root at runtime; sync into canonical paths via scripts/sync-from-new-skills.sh"
+
+mappings:
+  - reference: claude-software-skills
+    canonical:
+      - skills/_shared/specialist-skills
+      - skills/_shared/specialist-skills-source
+    manifest: skills/_shared/specialist-skills/MANIFEST.md
+    sync: "rsync categories into specialist-skills/"
+
+  - reference: cc-skills-golang
+    canonical: plugins/stack-golang/skills
+    plugin: stack-golang
+
+  - reference: claude-code-nextjs-skills
+    canonical: plugins/stack-frontend/skills
+    plugin: stack-frontend
+    note: "Base Next.js, React, shadcn, AI SDK skills"
+
+  - reference: agent-skills-frontend
+    canonical: plugins/stack-frontend/skills
+    plugin: stack-frontend
+    merge: true
+    exclude: ["*.zip"]
+    note: "Vercel Labs — overlays react-best-practices, web-design-guidelines; adds composition-patterns, vercel-optimize, react-view-transitions, react-native-skills, deploy-to-vercel, writing-guidelines"
+
+  - reference: agent-toolkit-for-aws
+    canonical: plugins/stack-aws/skills
+    plugin: stack-aws
+
+  - reference: Agent-Skills
+    canonical: plugins/stack-azure/skills
+    plugin: stack-azure
+
+  - reference: agent-skills1
+    canonical: plugins/sdlc-workflows/skills
+    plugin: sdlc-workflows
+
+  - reference: agent-toolkit
+    canonical: plugins/agent-toolkit/skills
+    plugin: agent-toolkit
+
+  - reference: system-design-skills
+    canonical: plugins/system-design/skills
+    plugin: system-design
+    exclude: [site, meta/evals]
+
+  - reference: claude-code-production-grade-plugin
+    canonical: agents/
+    plugin: null
+    note: "Removed plugins/production-grade — content merged into agents/ (devops, sre, security-engineer, etc.). Do not sync to a plugin folder."
+
+  - reference: claude-code/plugins
+    canonical: plugins/delivery-toolkit
+    subplugins:
+      - feature-dev
+      - pr-review-toolkit
+      - code-review
+      - security-guidance
+      - commit-commands
+
+  - reference: claude-code-staff-engineer
+    canonical: plugins/staff-engineer
+    plugin: staff-engineer
+    optional: true
+
+  - reference: spring-boot-skills
+    canonical: plugins/stack-spring
+    plugin: stack-spring
+    sync: "scripts/merge-spring-boot-skills.sh"
+    note: "Boot 3.x skills → plugins/stack-spring/skills/; Boot 4.x → references/spring-boot-4/ (opt-in)"
+  - reference: claude-code-java
+    canonical: plugins/stack-spring/skills
+    plugin: stack-spring
+    sync: "scripts/merge-claude-code-java.sh"
+    note: "18 review/quality Java skills merged into stack-spring; docs → references/claude-code-java/"
+
+  - reference: skills
+    canonical: plugins/stack-vue
+    plugin: stack-vue
+    sync: "scripts/merge-vue-skills.sh"
+    note: "vuejs-ai/skills → plugins/stack-vue/skills/"
+
+  - reference: nuxt-skills
+    canonical: plugins/stack-nuxt
+    plugin: stack-nuxt
+    sync: "scripts/merge-nuxt-skills.sh"
+    note: "onmax/nuxt-skills → plugins/stack-nuxt/skills/"
+
+  - reference: claude-skills
+    canonical: plugins/claude-skills-catalog
+    plugin: claude-skills-catalog
+    skill_count: 66
+    note: "Synced on every scripts/sync-from-new-skills.sh run"
+
+  - reference: sample-claude-code-plugins-for-startups
+    canonical: null
+    note: "Reference samples only; not part of default install"
+
+orchestrator:
+  path: .
+  note: "Repo root — sdlc-automation-agent; not copied from new-skills"

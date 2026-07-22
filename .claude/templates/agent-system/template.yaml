@@ -1,0 +1,11 @@
+name: agent-system
+description: Autonomous agent system with memory, tools, and safety guardrails
+stack:
+  runtime: [python-3.12, typescript]
+  framework: [langchain, llamaindex, crewai, langgraph]
+  memory: [pgvector, redis, mem0]
+  tracing: [langsmith, phoenix, langfuse]
+  safety: [nemo-guardrails, llamaguard]
+  mcp: true
+  ci: github-actions
+  deploy: [aws-ecs, gcp-cloud-run]

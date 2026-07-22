@@ -1,0 +1,14 @@
+# Story Template — Use this to register a new user story in the registry
+
+stories:
+  US-{NUMBER}:
+    title: "{Title}"
+    description: "As a {role}, I want to {action} so that {benefit}"
+    acceptance_criteria:
+      - "{Given/When/Then format}"
+    implementation:
+      files: []
+      tests: []
+    status: pending
+    created_at: "{TIMESTAMP}"
+    linked_adr: "ADR-{NUMBER}"

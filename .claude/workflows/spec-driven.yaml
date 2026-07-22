@@ -1,0 +1,54 @@
+name: spec-driven
+description: "Spec-driven development — write spec, review, implement, verify against spec"
+trigger_patterns:
+  - "spec"
+  - "spec-driven"
+  - "spec first"
+  - "write spec"
+  - "requirements"
+
+stages:
+  - id: spec-writing
+    agent: product-manager
+    model_tier: standard
+    outputs:
+      - "docs/specs/requirements.md"
+      - "docs/specs/acceptance-criteria.md"
+
+  - id: spec-review
+    agent: solution-architect
+    model_tier: premium
+    depends_on: [spec-writing]
+    gates:
+      - id: spec-approved
+        type: manual
+        prompt: "Review the specification for completeness, clarity, and feasibility before implementation begins"
+    outputs:
+      - "docs/specs/approved-spec.md"
+
+  - id: implementation
+    agent: software-engineer
+    model_tier: standard
+    depends_on: [spec-review]
+    outputs:
+      - "services/**/*.ts"
+      - "libs/**/*.ts"
+
+  - id: verification
+    agent: quality-engineer
+    model_tier: standard
+    depends_on: [implementation]
+    gates:
+      - id: spec-compliance
+        type: automatic
+        condition: "all_spec_requirements_met"
+    outputs:
+      - "tests/**/*.spec.ts"
+      - "docs/specs/compliance-report.md"
+
+estimated_cost:
+  spec-writing: "$1.00-2.00"
+  spec-review: "$2.00-3.00"
+  implementation: "$3.00-6.00"
+  verification: "$1.00-2.00"
+  total: "$7.00-13.00"

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "confluence": {
+      "command": "npx",
+      "args": ["-y", "@agenite/confluence-mcp-server"],
+      "env": {
+        "CONFLUENCE_HOST": "https://your-domain.atlassian.net",
+        "CONFLUENCE_USER": "${CONFLUENCE_USER}",
+        "CONFLUENCE_API_TOKEN": "${CONFLUENCE_API_TOKEN}"
+      }
+    }
+  }
+}

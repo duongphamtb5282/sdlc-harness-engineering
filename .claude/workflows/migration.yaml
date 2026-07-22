@@ -1,0 +1,60 @@
+name: migration
+description: "System migration workflow — analyze, plan, migrate, verify"
+trigger_patterns:
+  - "migrate"
+  - "migration"
+  - "upgrade"
+  - "move from"
+  - "port"
+
+stages:
+  - id: analysis
+    agent: solution-architect
+    model_tier: premium
+    gates:
+      - id: migration-plan
+        type: manual
+        prompt: "Review migration plan and rollback strategy before proceeding"
+    outputs:
+      - "docs/architecture/migration-plan.md"
+
+  - id: data-migration
+    agent: software-engineer
+    model_tier: standard
+    depends_on: [analysis]
+    outputs:
+      - "scripts/migration/**/*.ts"
+
+  - id: code-migration
+    agent: software-engineer
+    model_tier: standard
+    depends_on: [analysis]
+    outputs:
+      - "services/**/*.ts"
+      - "libs/**/*.ts"
+
+  - id: testing
+    agent: quality-engineer
+    model_tier: standard
+    depends_on: [data-migration, code-migration]
+    gates:
+      - id: parity-check
+        type: automatic
+        condition: "behavioral_parity_confirmed"
+
+  - id: review
+    agent: code-reviewer
+    model_tier: premium
+    depends_on: [testing]
+    gates:
+      - id: rollback-check
+        type: manual
+        prompt: "Verify rollback procedures are tested and documented"
+
+estimated_cost:
+  analysis: "$3.00-6.00"
+  data-migration: "$3.00-8.00"
+  code-migration: "$5.00-10.00"
+  testing: "$2.00-5.00"
+  review: "$3.00-5.00"
+  total: "$16.00-34.00"

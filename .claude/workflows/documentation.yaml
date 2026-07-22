@@ -1,0 +1,37 @@
+name: documentation
+description: "Documentation generation workflow — content audit, write, review, publish"
+trigger_patterns:
+  - "document"
+  - "documentation"
+  - "write docs"
+  - "api docs"
+  - "readme"
+
+stages:
+  - id: content-audit
+    agent: technical-writer
+    model_tier: standard
+    outputs:
+      - "docs/coverage-audit.md"
+
+  - id: writing
+    agent: technical-writer
+    model_tier: standard
+    depends_on: [content-audit]
+    outputs:
+      - "docs/**/*.md"
+
+  - id: review
+    agent: code-reviewer
+    model_tier: standard
+    depends_on: [writing]
+    gates:
+      - id: quality-check
+        type: manual
+        prompt: "Review documentation for accuracy and completeness"
+
+estimated_cost:
+  content-audit: "$1.00-2.00"
+  writing: "$2.00-5.00"
+  review: "$1.00-2.00"
+  total: "$4.00-9.00"

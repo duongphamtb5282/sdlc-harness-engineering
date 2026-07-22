@@ -1,0 +1,53 @@
+name: feature
+description: "Standard feature delivery — analysis, implementation, testing, review"
+trigger_patterns:
+  - "add feature"
+  - "implement"
+  - "build"
+  - "create"
+
+stages:
+  - id: design
+    agent: solution-architect
+    model_tier: standard
+    gates:
+      - id: scope-check
+        type: automatic
+        condition: "design_complete"
+    outputs:
+      - "docs/architecture/ADR-*.md"
+
+  - id: implementation
+    agent: software-engineer
+    model_tier: standard
+    depends_on: [design]
+    outputs:
+      - "services/**/*.ts"
+      - "libs/**/*.ts"
+
+  - id: testing
+    agent: quality-engineer
+    model_tier: standard
+    depends_on: [implementation]
+    gates:
+      - id: coverage-gate
+        type: automatic
+        condition: "coverage > 80%"
+    outputs:
+      - "tests/**/*.spec.ts"
+
+  - id: review
+    agent: code-reviewer
+    model_tier: premium
+    depends_on: [testing]
+    gates:
+      - id: review-gate
+        type: manual
+        prompt: "Code review findings require resolution"
+
+estimated_cost:
+  design: "$1.00-2.00"
+  implementation: "$3.00-6.00"
+  testing: "$1.00-2.00"
+  review: "$2.00-3.00"
+  total: "$7.00-13.00"

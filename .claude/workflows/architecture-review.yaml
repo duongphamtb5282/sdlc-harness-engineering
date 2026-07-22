@@ -1,0 +1,39 @@
+name: architecture-review
+description: "Architecture decision review — ADR generation, conformance check, recommendations"
+trigger_patterns:
+  - "architecture review"
+  - "adr"
+  - "architecture decision"
+  - "design review"
+  - "tech design"
+
+stages:
+  - id: context-gathering
+    agent: solution-architect
+    model_tier: standard
+    outputs:
+      - "docs/architecture/context.md"
+
+  - id: adr-generation
+    agent: solution-architect
+    model_tier: premium
+    depends_on: [context-gathering]
+    gates:
+      - id: adr-review
+        type: manual
+        prompt: "Review ADRs for completeness before proceeding"
+    outputs:
+      - "docs/architecture/ADR-*.md"
+
+  - id: conformance-check
+    agent: code-reviewer
+    model_tier: premium
+    depends_on: [adr-generation]
+    outputs:
+      - "docs/reviews/architecture-conformance.md"
+
+estimated_cost:
+  context-gathering: "$1.00-2.00"
+  adr-generation: "$3.00-5.00"
+  conformance-check: "$2.00-4.00"
+  total: "$6.00-11.00"

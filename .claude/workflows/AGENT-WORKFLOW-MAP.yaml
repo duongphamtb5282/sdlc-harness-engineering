@@ -1,0 +1,95 @@
+# Agent-to-Workflow Mapping
+# Maps each agent role to workflows, stages, and phase entry points.
+
+agents:
+  product-manager:
+    workflows: [greenfield, spec-driven, feature]
+    stages: [spec-writing, requirements]
+    entry_phase: "01-understand-input"
+
+  solution-architect:
+    workflows: [greenfield, feature, architecture-review, migration, rag-system, agent-system, discovery-to-delivery]
+    stages: [design, architecture, adr-generation, codebase-discovery]
+    entry_phase: "01-discovery"
+
+  software-engineer:
+    workflows: [greenfield, feature, bugfix, migration, ai-ml-pipeline, discovery-to-delivery]
+    stages: [implementation, fix, code-migration, backend]
+    entry_phase: "01-context-analysis"
+
+  frontend-engineer:
+    workflows: [greenfield]
+    stages: [frontend]
+    entry_phase: "01-analysis"
+
+  quality-engineer:
+    workflows: [greenfield, feature, bugfix, security-review, ai-ml-pipeline, rag-system, discovery-to-delivery]
+    stages: [testing, verification, regression, evaluation]
+    entry_phase: "01-plan"
+
+  code-reviewer:
+    workflows: [greenfield, feature, bugfix, architecture-review, documentation, security-review, discovery-to-delivery]
+    stages: [review, conformance-check, diagnose, report]
+    entry_phase: "01-scan"
+
+  security-engineer:
+    workflows: [greenfield, security-review, agent-system]
+    stages: [threat-modeling, code-audit, safety-audit]
+    entry_phase: "01-threat-modeling"
+
+  platform-engineer:
+    workflows: [greenfield, migration, ai-ml-pipeline, rag-system, agent-system, discovery-to-delivery]
+    stages: [deploy, deployment]
+    entry_phase: "01-ci-cd"
+
+  data-scientist:
+    workflows: [ai-ml-pipeline]
+    stages: [experiment-design, data-preparation]
+    entry_phase: "01-system-audit"
+
+  ai-ml-engineer:
+    workflows: [ai-ml-pipeline, rag-system, agent-system]
+    stages: [training, embedding-pipeline, agent-core]
+    entry_phase: "01-requirements-analysis"
+
+  technical-writer:
+    workflows: [documentation]
+    stages: [content-audit, writing]
+    entry_phase: "01-content-audit"
+
+  research-advisor:
+    workflows: [discovery-to-delivery]
+    stages: [codebase-discovery]
+    entry_phase: "01-discover"
+
+  mobile-engineer:
+    workflows: [feature]
+    stages: [implementation]
+    entry_phase: "01-analysis"
+
+  dotnet-engineer:
+    workflows: [feature, migration]
+    stages: [implementation, code-migration]
+    entry_phase: "01-setup"
+
+  cloud-architect:
+    workflows: [architecture-review, migration]
+    stages: [architecture, analysis]
+    entry_phase: "01-assessment"
+
+workflows:
+  greenfield:
+    stages: [requirements, architecture, backend, frontend, testing, review, security, deploy]
+    default_agents: [product-manager, solution-architect, software-engineer, frontend-engineer, quality-engineer, code-reviewer, security-engineer, platform-engineer]
+
+  feature:
+    stages: [design, implementation, testing, review]
+    default_agents: [solution-architect, software-engineer, quality-engineer, code-reviewer]
+
+  bugfix:
+    stages: [diagnose, fix, verify]
+    default_agents: [code-reviewer, software-engineer, quality-engineer]
+
+  discovery-to-delivery:
+    stages: [codebase-discovery, requirements, architecture-design, story-registration, implementation, testing, review, deploy]
+    default_agents: [research-advisor, product-manager, solution-architect, product-manager, software-engineer, quality-engineer, code-reviewer, platform-engineer]
