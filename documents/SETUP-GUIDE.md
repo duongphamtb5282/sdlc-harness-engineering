@@ -1,8 +1,8 @@
 # SDLC Agent System — Setup & Usage Guide
 
-> **Target:** `enhancement/` folder (the redesigned structure)  
 > **Version:** 2.0.0  
-> **Total skills:** 16,400+ files across .claude/ and .cursor/
+> **Installed at:** `~/.claude/plugins/sdlc-automation-agent/`  
+> **Total skills:** 16,400+ files across plugins/
 > 
 > **📖 Architecture doc:** See `ARCHITECTURE.md` for system design, execution flows, and customization guide.
 
@@ -20,45 +20,48 @@
 8. [Cost Control & Model Routing](#8-cost-control--model-routing)
 9. [Adding New Skills](#9-adding-new-skills)
 10. [Troubleshooting](#10-troubleshooting)
+11. [Complete Use Case: Java Spring + React/Next.js + AWS + RAG](#11-complete-use-case-java-spring--reactnextjs--aws--rag)
 
 ---
 
 ## 1. Quick Start
 
-### Claude Code
+### One-Command Install (macOS / Linux)
+
+```bash
+# From the sdlc-automation-agent repo root:
+bash scripts/install-agents.sh --auto
+```
+
+This installs everything to `~/.claude/`:
+- **19 agent roles** at `~/.claude/plugins/sdlc-automation-agent/agent-roles/`
+- **15 agent stubs** at `~/.claude/agents/` (registered with Claude Code)
+- **24 stack/delivery plugins** at `~/.claude/plugins/sdlc-automation-agent/plugins/`
+- **7 hook scripts** for session guards, audit, and receipt tracking
+- **Deep Spec** protocol for traceability
+
+After install, open any project in Claude Code and describe what you want to build.
+
+### Manual Project Install
 
 ```bash
 # Install into your project
-rsync -a --delete enhancement/.claude/ /path/to/your-project/.claude/
+rsync -a --delete ~/.claude/plugins/sdlc-automation-agent/ /path/to/your-project/.claude/
 
 # Start Claude Code with the plugin
 cd /path/to/your-project
 claude --plugin-dir .claude
-
-# Or with specific stack plugins
-claude --plugin-dir .claude \
-  --plugin-dir .claude/plugins/stack-aws \
-  --plugin-dir .claude/plugins/stack-ai-ml
-```
-
-### Cursor
-
-```bash
-# Install into your project
-rsync -a --delete enhancement/.cursor/ /path/to/your-project/.cursor/
-
-# Open your project in Cursor
-cursor /path/to/your-project
 ```
 
 ### First Run
 
-When you first open the project, the `sdlc-automation-agent` orchestrator will:
+When you first open a project, the orchestrator will:
 
 1. **Detect** your project structure and technology stack
 2. **Initialize** `.sdlc-automation-agent.yaml` with defaults
 3. **Present** options: Start building, Reverse-engineer first, or Work without pipeline
-4. **Route** your request to the right agent(s)
+4. **Auto-load** the right plugins for your stack (Java → stack-spring, React → stack-frontend, AWS → stack-aws, RAG → stack-ai-ml)
+5. **Route** your request to the right agent(s)
 
 ---
 
@@ -942,3 +945,745 @@ for event, configs in h['hooks'].items():
 # Test a hook directly
 bash .claude/hooks/cost-controller/classify-task.sh "Build a new API endpoint"
 ```
+
+---
+
+## 11. Complete Use Case: Java Spring + React/Next.js + AWS + RAG
+
+This section walks through the **full SDLC pipeline** for a real-world polyglot project. It shows how the agent system auto-discovers your stack, loads the right skills, and routes work through the delivery pipeline.
+
+### Tech Stack Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   YOUR PROJECT                           │
+├────────────┬───────────┬──────────┬──────────────────────┤
+│  Backend   │  Frontend │  Cloud   │  AI/ML               │
+│  Java 21   │  Next.js  │  AWS     │  RAG Pipeline        │
+│  Spring 3  │  React 19 │  ECS     │  LangChain4j         │
+│  PostgreSQL│  Tailwind │  RDS     │  Pinecone             │
+│  JPA       │  shadcn   │  S3      │  OpenAI Embeddings   │
+└────────────┴───────────┴──────────┴──────────────────────┘
+```
+
+**Agents and plugins activated for this stack:**
+
+| Technology | Activated Plugin | Key Skills Auto-Loaded |
+|------------|-----------------|----------------------|
+| Java 21 + Spring Boot 3 | `stack-spring` | `rest-api-conventions`, `spring-data-jpa`, `layered-architecture`, `problem-details-rfc9457`, `testing-pyramid`, `spring-security-jwt`, `flyway-migrations`, `openapi-first` |
+| Java Core | `stack-java` | Java conventions, Maven/Gradle patterns |
+| React + Next.js | `stack-frontend` | `next-best-practices`, `react-best-practices`, `shadcn`, `web-design-guidelines`, `composition-patterns`, `react-view-transitions`, `react-state-management` |
+| AWS | `stack-aws` | `aws-containers` (ECS), `aws-iam`, `aws-cdk`, `aws-observability`, `aws-serverless` |
+| AI/ML + RAG | `stack-ai-ml` | `ai-agents-architect`, `context-window-management`, `data-processing-ray-data`, `data-scientist` |
+| System Design | `system-design` | `system-design`, `api-design`, `data-storage`, `caching`, `scaling-evolution` |
+| Orchestration | `sdlc-workflows` | `spec-driven-development`, `incremental-implementation`, `code-review-and-quality`, `ci-cd-and-automation`, `security-and-hardening` |
+
+**Language packs auto-detected:**
+
+| Pack | Detection Signal | Conventions Loaded |
+|------|-----------------|-------------------|
+| `packs/languages/java-spring/` | `pom.xml`, `build.gradle*` | Spring Boot layout, layered architecture, package naming, DI patterns |
+| `packs/clouds/aws/` | `provider "aws"` in terraform | Resource naming, tagging conventions, security best practices |
+
+### Agent-Skill Mapping for This Stack
+
+When the orchestrator dispatches an agent, it loads stack-specific skills via the AGENT-SKILL-MAP:
+
+```
+                     AGENT-SKILL-MAP.yaml
+                           │
+          ┌────────────────┼────────────────┐
+          ▼                ▼                ▼
+   solution-architect  software-engineer  platform-engineer
+          │                │                │
+          ▼                ▼                ▼
+   system-design       stack-spring      stack-aws
+   api-design          stack-frontend    aws-containers
+   data-storage        sdlc-workflows    aws-cdk
+   caching                                  aws-iam
+```
+
+### Phase 1: Discovery (Reverse-Engineer Existing Codebase)
+
+When you ask the orchestrator to understand an existing codebase:
+
+```bash
+claude "Discover this codebase. Map the architecture, dependencies, and patterns."
+```
+
+**What happens internally:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ DISCOVERY                                                    │
+│                                                              │
+│  1. Scan project root → detect signals                       │
+│     • pom.xml          → Java + Spring Boot (stack-spring)   │
+│     • package.json     → Next.js (stack-frontend)            │
+│     • provider "aws"   → AWS (stack-aws)                     │
+│     • Dockerfile       → Containerized                       │
+│     • docker-compose   → PostgreSQL, Redis                   │
+│                                                              │
+│  2. Read existing configs                                     │
+│     • application.yml  → Spring profiles, DB connections      │
+│     • next.config.js   → App router, middleware               │
+│     • build.gradle     → Dependencies, plugins                │
+│     • Dockerfile       → Base image, layers                   │
+│                                                              │
+│  3. Generate codebase context                                  │
+│     .sdlc-automation-agent/.orchestrator/codebase-context.md  │
+│     .sdlc-automation-agent/.orchestrator/dependency-map.md   │
+│     .sdlc-automation-agent/.orchestrator/health-assessment.md│
+│                                                              │
+│  4. Produce dependency map                                     │
+│     services/user-service/src/main/java/com/app/user/         │
+│     services/order-service/src/main/java/com/app/order/       │
+│     apps/web/src/app/  (Next.js app router pages)             │
+│     infra/terraform/   (AWS infrastructure)                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Output files:**
+- `.sdlc-automation-agent/.orchestrator/codebase-context.md` — Architecture summary
+- `.sdlc-automation-agent/.orchestrator/context-packages/dependency-map.md` — Service dependencies
+- `.sdlc-automation-agent/.orchestrator/context-packages/interface-contracts.md` — API contracts found
+- `docs/architecture/system-diagrams/c4-context.md` — C4 context diagram
+- `docs/architecture/ERD.md` — Entity relationships (from JPA entities)
+
+### Phase 2: Configuration (.sdlc-automation-agent.yaml)
+
+After discovery, the orchestrator generates this config. Here's what it looks like for this stack:
+
+```yaml
+# ============================================
+# sdlc-automation-agent — Java Spring + Next.js + AWS + RAG
+# ============================================
+
+project:
+  name: "my-saas-platform"
+  type: "brownfield"
+  language: "java"                    # Primary backend language
+  framework: "spring-boot-3"          # Primary framework
+
+build_mode: "scrum"
+engagement_mode: "autonomous"
+
+# ============================================
+# Tech Stack (machine-readable for skill loading)
+# ============================================
+tech_stack:
+  backend:
+    language: java
+    framework: spring-boot-3
+    build_tool: gradle                 # or maven
+    java_version: 21
+    spring_boot_version: "3.3"
+    database: postgresql
+    cache: redis
+    messaging: kafka
+    orm: jpa-hibernate
+    test: junit5-mockito
+
+  frontend:
+    framework: nextjs
+    react_version: 19
+    styling: tailwind
+    ui_library: shadcn
+    state: zustand
+    test: vitest-playwright
+
+  cloud:
+    provider: aws
+    compute: ecs-fargate
+    database: rds-postgresql
+    cache: elasticache-redis
+    storage: s3
+    cdn: cloudfront
+    ci_cd: github-actions
+
+  ai_ml:
+    enabled: true
+    type: rag
+    vector_store: pinecone
+    embedding: openai-text-embedding-3-small
+    llm: gpt-4o
+    framework: langchain4j           # Java-native RAG framework
+
+# ============================================
+# Pack Detection (auto-detected, manual override)
+# ============================================
+packs:
+  language: java-spring               # loads packs/languages/java-spring/
+  cloud: aws                          # loads packs/clouds/aws/
+
+# ============================================
+# Definition of Done (stack-specific)
+# ============================================
+dod:
+  test_coverage: 85                   # Java: 85% line coverage (JaCoCo)
+  lint_passed: true                   # Java: checkstyle, JS: eslint
+  build_passed: true                  # ./gradlew build + next build
+  api_tested: true                    # OpenAPI contract tests
+  security_scan: true                 # OWASP dependency check
+  terraform_validated: true           # terraform validate
+  rag_evaluation: true                # RAG: retrieval precision > 0.85
+
+# ============================================
+# Plugin Selection (auto-resolved from tech_stack)
+# ============================================
+plugins:
+  enabled:
+    - stack-spring                    # Java + Spring Boot skills (37 skills)
+    - stack-java                      # Java core skills
+    - stack-frontend                  # Next.js + React skills
+    - stack-aws                       # AWS infrastructure skills
+    - stack-ai-ml                     # RAG + AI/ML skills
+    - system-design                   # Architecture design skills
+    - sdlc-workflows                  # Delivery workflow engine
+    - delivery-toolkit                # PR review, code review
+    - agent-toolkit                   # Utility tools
+
+# ============================================
+# Deep Spec (traceability) — see .protocols/deep-spec.md
+# ============================================
+deep_spec:
+  enabled: true
+  gates:
+    test_coverage: true
+    spec_compliance: true
+  artifacts:
+    contracts: true
+    coverage_report: true
+
+# ============================================
+# Path Configuration
+# ============================================
+paths:
+  services: "services/"               # Java microservices
+  frontend: "apps/web/"               # Next.js app
+  infra: "infra/"                     # Terraform / CDK
+  docs: "docs/"
+  tests: "tests/"
+
+# ============================================
+# Verify Commands (used by SE and QE)
+# ============================================
+verify:
+  build: "./gradlew build -x test 2>&1 | tail -5"
+  test: "./gradlew test 2>&1 | tail -10"
+  type_check: "./gradlew compileJava 2>&1 | tail -5"
+  frontend_build: "cd apps/web && npm run build 2>&1 | tail -5"
+  frontend_test: "cd apps/web && npm test -- --bail 2>&1 | tail -10"
+
+# ============================================
+# MCP Integration
+# ============================================
+mcp:
+  jira: true
+  github: true
+  confluence: false
+  slack: false
+```
+
+### Phase 3: Requirements (Product Manager)
+
+```bash
+claude "We need to add a RAG-powered documentation search to our SaaS platform. Users can ask questions about our product docs and get AI-generated answers with citations."
+```
+
+**PM agent loads these stack-specific skills:**
+- `sdlc-workflows/spec-driven-development` — EARS requirements
+- `sdlc-workflows/planning-and-task-breakdown` — Story decomposition
+- `agent-toolkit/jira` — Tracker integration
+
+**What PM produces:**
+
+```
+docs/requirements/
+├── BRD.md                              # Business requirements document
+│   ├── 5 Lenses analysis               # Customer, Business, Technical, etc.
+│   ├── NFR Grid                        # Performance, scalability, security
+│   └── Scope boundaries
+├── epics/EPIC-001-rag-search.md         # Epic with 12 fields
+│   └── features/
+│       ├── FEAT-001-doc-ingestion.md    # Document ingestion pipeline
+│       ├── FEAT-002-embedding-service.md# Embedding generation service
+│       └── FEAT-003-search-api.md       # Search query API
+
+.sdlc-automation-agent/specs/rag-search/
+├── requirements.md                      # EARS notation (REQ-01..REQ-15)
+├── contracts.md                         # Behavioral contracts (REQ-01..REQ-15)
+│   ├── REQ-05: POST /api/search         # Input, output, error states, side effects
+│   └── REQ-08: Document upload          # S3 upload event → pipeline trigger
+└── metadata.yaml                        # Status: requirements
+
+.sdlc-automation-agent/.orchestrator/
+├── open-decisions.md                    # Unresolved decisions blocking implementation
+└── story-registry.yaml                  # Story-to-epic mapping
+```
+
+### Phase 4: Architecture (Solution Architect)
+
+```bash
+claude "The PM requirements are approved. Design the architecture for the RAG search feature."
+```
+
+**SA agent loads these stack-specific skills:**
+- `system-design/system-design` — Architecture patterns
+- `system-design/api-design` — API contract design
+- `system-design/data-storage` — PostgreSQL + Pinecone data model
+- `system-design/caching` — Redis caching strategy
+- `system-design/scaling-evolution` — Scaling for 10k QPS
+- `stack-spring/rest-api-conventions` — Spring REST API patterns
+- `stack-spring/spring-data-jpa` — JPA entity design
+- `stack-spring/hexagonal-architecture` — Port/adapter pattern for Java
+- `stack-spring/openapi-first` — OpenAPI contract generation
+- `stack-frontend/next-best-practices` — Next.js App Router patterns
+- `stack-ai-ml/ai-agents-architect` — RAG architecture patterns
+- `stack-aws/aws-containers` — ECS Fargate deployment design
+- `stack-aws/aws-iam` — IAM roles for RAG pipeline
+
+**What SA produces:**
+
+```
+docs/architecture/
+├── SAD.md                               # System Architecture Document
+│   ├── Architecture pattern: Modular monolith → Event-driven
+│   ├── Service boundaries
+│   └── Data flow diagrams
+├── adrs/
+│   ├── ADR-001-langchain4j-framework.md    # LangChain4j for Java RAG
+│   │   req_ids: [REQ-01, REQ-02, REQ-05]  # Deep Spec tag
+│   ├── ADR-002-pinecone-vector-store.md    # Pinecone for embeddings
+│   │   req_ids: [REQ-03, REQ-07]
+│   ├── ADR-003-ecs-fargate-deployment.md   # ECS Fargate for compute
+│   │   req_ids: [REQ-12]
+│   └── ADR-004-s3-event-bridge-ingestion.md
+│       req_ids: [REQ-08, REQ-09]
+├── tech-stack.md                          # Technology choices + rationale
+├── ERD.md                                 # Entity-Relationship Diagram
+│   ├── Document, Chunk, Embedding entities
+│   └── PostgreSQL + Pinecone data model
+├── system-diagrams/
+│   ├── c4-context.md                      # System context diagram
+│   ├── c4-container.md                   # Container diagram
+│   └── sequence-rag-query.md             # Query flow sequence
+└── design-principles.md
+
+api/
+├── openapi/
+│   ├── ingestion-service.yaml            # Document upload API
+│   ├── search-service.yaml               # Search query API
+│   └── embedding-service.yaml            # Internal embedding API
+
+.sdlc-automation-agent/specs/rag-search/
+├── design.md                              # Design traceability table
+│   ├── REQ-01 → ADR-001, api/search-service.yaml
+│   ├── REQ-05 → ADR-002, ingestion service
+│   └── ... all REQ-IDs traced
+└── metadata.yaml                          # Status: design, design_approved: true
+```
+
+### Phase 5: Task Breakdown (PM → Tasks)
+
+```bash
+claude "The architecture is approved. Create implementation tasks."
+```
+
+**What PM produces:**
+
+```
+.sdlc-automation-agent/specs/rag-search/
+├── tasks.md                               # Checkbox implementation plan
+│   ├── T1: Document entity + JPA mapping
+│   │   Refs: REQ-08, REQ-09
+│   │   Owner: SE
+│   │   Verify: ./gradlew test --tests *Document*
+│   ├── T2: Document ingestion REST API
+│   │   Refs: REQ-08
+│   │   Owner: SE
+│   │   Verify: ./gradlew test --tests *IngestionController*
+│   ├── T3: Embedding generation service
+│   │   Refs: REQ-03, REQ-04
+│   │   Owner: SE (ai-ml mode)
+│   │   Verify: ./gradlew test --tests *EmbeddingService*
+│   ├── T4: Pinecone vector store integration
+│   │   Refs: REQ-03, REQ-07
+│   │   Owner: SE (ai-ml mode)
+│   │   Verify: integration test with testcontainers
+│   ├── T5: Search query API (RAG)
+│   │   Refs: REQ-05, REQ-06
+│   │   Owner: SE
+│   │   Verify: ./gradlew test --tests *SearchController*
+│   ├── T6: Frontend search UI
+│   │   Refs: REQ-05, REQ-10
+│   │   Owner: SE (frontend mode)
+│   │   Verify: npm test -- --bail
+│   ├── T7: AWS infrastructure (ECS + RDS)
+│   │   Owner: PE
+│   │   Verify: terraform validate
+│   └── T8: CI/CD pipeline
+│       Owner: PE
+│       Verify: gh run list
+└── metadata.yaml                          # Status: tasks, tasks_approved: true
+```
+
+### Phase 6: Implementation (Software Engineer)
+
+The SE agent operates in mode-specific dispatches. Each mode loads different skills.
+
+#### Backend Mode — Java Spring Implementation
+
+```bash
+# Orchestrator dispatches for T1-T5
+```
+
+**Skills loaded for backend mode:**
+- `stack-spring/layered-architecture` — Controller → Service → Repository pattern
+- `stack-spring/rest-api-conventions` — REST endpoint naming, response format
+- `stack-spring/spring-data-jpa` — JPA entity design, repository patterns
+- `stack-spring/spring-security-jwt` — Auth integration
+- `stack-spring/flyway-migrations` — Database migration conventions
+- `stack-spring/problem-details-rfc9457` — Error response RFC 9457
+- `stack-spring/testing-pyramid` — JUnit 5 + Mockito test patterns
+- `stack-spring/openapi-first` — OpenAPI → Code generation
+- `stack-spring/hexagonal-architecture` — Port/adapter isolation
+
+**Code produced:**
+
+```
+services/ingestion-service/src/main/java/com/app/ingestion/
+├── domain/
+│   ├── model/
+│   │   ├── Document.java               # JPA entity
+│   │   ├── Chunk.java                  # Document chunk entity
+│   │   └── DocumentStatus.java         # Enum: PENDING, PROCESSED, FAILED
+│   ├── port/
+│   │   ├── DocumentRepository.java     # Repository interface
+│   │   └── EmbeddingService.java       # Port for embedding generation
+│   └── service/
+│       └── IngestionService.java       # Business logic
+├── adapter/
+│   ├── persistence/
+│   │   ├── JpaDocumentRepository.java  # JPA implementation
+│   │   └── FlywayMigration.java        # DB migration config
+│   └── rest/
+│       ├── DocumentController.java     # REST endpoints
+│       ├── dto/
+│       │   ├── DocumentRequest.java    # Request DTO
+│       │   └── DocumentResponse.java   # Response DTO
+│       └── exception/
+│           └── GlobalExceptionHandler.java  # RFC 9457 error handler
+└── Infrastructure/
+    ├── config/
+    │   ├── S3Config.java               # AWS S3 client config
+    │   └── CacheConfig.java            # Redis cache config
+    └── security/
+        └── JwtAuthFilter.java          # JWT authentication filter
+
+services/search-service/src/main/java/com/app/search/
+├── domain/
+│   ├── model/
+│   │   ├── SearchQuery.java
+│   │   ├── SearchResult.java
+│   │   └── Citation.java
+│   ├── port/
+│   │   ├── VectorStore.java            # Port for vector search
+│   │   └── LlmClient.java              # Port for LLM completion
+│   └── service/
+│       └── RagSearchService.java       # RAG orchestration logic
+├── adapter/
+│   ├── persistence/
+│   │   ├── PineconeVectorStore.java    # Pinecone implementation
+│   │   └── PostgresMetadataStore.java  # Document metadata
+│   └── rest/
+│       ├── SearchController.java
+│       └── dto/
+│           ├── SearchRequest.java
+│           └── SearchResponse.java
+└── config/
+    ├── LangChain4jConfig.java          # LangChain4j configuration
+    └── OpenAiConfig.java               # OpenAI client config
+```
+
+**Deep Spec output after each task:**
+
+```json
+# .sdlc-automation-agent/specs/rag-search/coverage.json (after T1)
+{
+  "spec_id": "rag-search",
+  "task_id": "T1",
+  "files": {
+    "services/ingestion-service/src/main/java/com/app/ingestion/domain/model/Document.java": ["REQ-08"],
+    "services/ingestion-service/src/main/java/com/app/ingestion/domain/model/Chunk.java": ["REQ-09"]
+  },
+  "req_coverage": {
+    "REQ-08": { "status": "implemented", "files": ["...Document.java"] },
+    "REQ-09": { "status": "implemented", "files": ["...Chunk.java"] }
+  }
+}
+```
+
+#### Frontend Mode — React/Next.js Implementation
+
+```bash
+# Orchestrator dispatches for T6
+```
+
+**Skills loaded for frontend mode:**
+- `stack-frontend/next-best-practices` — App Router, server components, streaming
+- `stack-frontend/react-best-practices` — Component patterns, hooks
+- `stack-frontend/shadcn` — UI component library integration
+- `stack-frontend/web-design-guidelines` — Design patterns
+- `stack-frontend/composition-patterns` — Component composition
+- `stack-frontend/react-state-management` — Zustand for state
+- `stack-frontend/react-view-transitions` — View transitions API
+- `stack-frontend/typescript-testing` — Vitest + Testing Library
+
+**Code produced:**
+
+```
+apps/web/src/app/search/
+├── page.tsx                            # Search page (server component)
+├── loading.tsx                         # Suspense boundary
+├── error.tsx                           # Error boundary
+├── layout.tsx                          # Search layout with sidebar
+└── components/
+    ├── SearchInput.tsx                 # Search bar with autocomplete
+    ├── SearchResults.tsx               # Results list with citations
+    ├── SearchResultCard.tsx            # Individual result card
+    ├── CitationPopover.tsx             # Citation source preview
+    ├── FilterSidebar.tsx               # Faceted search filters
+    └── EmptyState.tsx                  # No results state
+```
+
+#### AI/ML Mode — RAG Implementation
+
+```bash
+# Orchestrator dispatches for T3-T4 with ai-ml mode
+```
+
+**Skills loaded for ai-ml mode:**
+- `stack-ai-ml/ai-agents-architect` — RAG architecture patterns
+- `stack-ai-ml/context-window-management` — Context optimization
+- `stack-ai-ml/data-processing-ray-data` — Document chunking
+- `stack-frontend/ai-sdk-6` — Vercel AI SDK integration
+- `stack-spring/spring-ai-integration` — Spring AI patterns
+- `stack-aws/amazon-bedrock` — AWS Bedrock as alternative LLM
+
+**RAG-specific code:**
+
+```
+services/ingestion-service/src/main/java/com/app/ingestion/rag/
+├── chunking/
+│   ├── ChunkStrategy.java              # Interface for chunking strategies
+│   ├── RecursiveCharacterChunker.java   # Recursive text splitting
+│   └── SemanticChunker.java            # Semantic boundary chunking
+├── embedding/
+│   ├── EmbeddingProvider.java          # Interface for embedding models
+│   ├── OpenAiEmbeddingProvider.java    # OpenAI text-embedding-3-small
+│   └── BatchEmbeddingProcessor.java    # Batch processing with rate limits
+├── store/
+│   ├── VectorStore.java                # Port interface
+│   ├── PineconeVectorStore.java        # Pinecone upsert/query
+│   └── MetadataIndex.java              # PostgreSQL metadata index
+└── pipeline/
+    ├── IngestionPipeline.java          # Orchestrates chunk → embed → store
+    └── DocumentProcessor.java          # File parsing, text extraction
+```
+
+### Phase 7: Testing (Quality Engineer)
+
+```bash
+claude "Run tests for the RAG search feature."
+```
+
+**QE skills loaded for this stack:**
+- `stack-spring/testing-pyramid` — Java test patterns
+- `stack-spring/spring-data-jpa` — Repository testing with @DataJpaTest
+- `stack-frontend/typescript-testing` — Vitest + Playwright
+- `sdlc-workflows/test-driven-development` — TDD approach
+
+**Test output:**
+
+```
+tests/
+├── unit/
+│   ├── java/
+│   │   ├── ingestion/
+│   │   │   ├── DocumentControllerTest.java     # Web MVC tests
+│   │   │   ├── IngestionServiceTest.java       # Business logic tests
+│   │   │   ├── DocumentRepositoryTest.java     # JPA repository tests
+│   │   │   └── RagSearchServiceTest.java       # RAG orchestration tests
+│   │   └── search/
+│   │       ├── SearchControllerTest.java
+│   │       └── PineconeVectorStoreTest.java    # Mocked vector store
+│   └── frontend/
+│       ├── SearchInput.test.tsx
+│       ├── SearchResults.test.tsx
+│       └── SearchPage.test.tsx
+├── integration/
+│   ├── java/
+│   │   ├── IngestionFlowIntegrationTest.java   # Real DB + S3 (testcontainers)
+│   │   ├── RagQueryIntegrationTest.java        # Real Pinecone test index
+│   │   └── SearchApiIntegrationTest.java       # Full HTTP flow
+│   └── docker-compose.test.yml                  # PostgreSQL, Redis, LocalStack
+├── e2e/
+│   ├── api/
+│   │   ├── search-flow.e2e.ts                  # API user journey
+│   │   └── ingestion-flow.e2e.ts               # Upload → process → search
+│   └── ui/
+│       └── search-user-flow.spec.ts            # Playwright user journey
+└── contract/
+    ├── search-service-api.test.ts               # OpenAPI contract validation
+    └── pacts/
+        └── web-ui-search-service.pact.ts        # Consumer-driven contract
+```
+
+**Deep Spec gate check:** QE writes `.sdlc-automation-agent/specs/rag-search/tests.md` and verifies every REQ-ID maps to ≥1 test:
+
+```
+| REQ-ID | AC-ID | Test File | Test Name | Status |
+|--------|-------|-----------|-----------|--------|
+| REQ-05 | AC-01 | SearchApiIntegrationTest.java | testSearchReturnsResults | PASS |
+| REQ-05 | AC-02 | SearchControllerTest.java | testSearchWithInvalidQuery | PASS |
+| REQ-08 | AC-05 | DocumentControllerTest.java | testUploadDocument | PASS |
+| REQ-03 | AC-03 | RagSearchServiceTest.java | testEmbeddingGeneration | PASS |
+```
+
+### Phase 8: Code Review (Code Reviewer)
+
+```bash
+claude "Review the RAG search implementation."
+```
+
+**CR skills loaded:**
+- `stack-spring/java-code-review` — Java-specific review patterns
+- `stack-spring/api-contract-review` — OpenAPI conformance
+- `stack-spring/jpa-patterns` — JPA correctness (N+1, lazy loading)
+- `stack-spring/concurrency-review` — Thread safety in Spring
+- `stack-spring/security-audit` — Security review
+- `stack-spring/performance-smell-detection` — Performance anti-patterns
+- `stack-frontend/react-best-practices` — React component review
+
+**CR produces:**
+
+```
+.sdlc-automation-agent/code-reviewer/
+├── spec-compliance.md                    # Deep Spec compliance
+│   ├── REQ-05: POST /api/search → SearchController.java ✓
+│   ├── REQ-08: Document upload → IngestionController.java ✓
+│   └── REQ-03: Embeddings → EmbeddingService.java ⚠ Partial
+├── arch-conformance.md                   # Architecture conformance
+│   ├── ADR-001: LangChain4j ✓
+│   ├── ADR-002: Pinecone ✓
+│   └── ADR-003: ECS Fargate ⚠ Deviations found
+├── java-review.md                        # Java-specific findings
+│   ├── Critical: N+1 query in DocumentRepository.findWithChunks()
+│   ├── High: Missing @Transactional on batch ingestion
+│   └── Medium: Controller returns 500 instead of 422 for invalid input
+└── auto-fixes/
+    └── fix-n-plus-one-query.patch         # Suggested fix
+```
+
+**Deep Spec check:** CR verifies coverage.json files match spec'd REQ-IDs, flags any scope creep.
+
+### Phase 9: Infrastructure & CI/CD (Platform Engineer)
+
+```bash
+claude "Deploy the RAG search service to AWS."
+```
+
+**PE skills loaded:**
+- `stack-aws/aws-containers` — ECS Fargate task definitions
+- `stack-aws/aws-cdk` — Infrastructure as Code (CDK)
+- `stack-aws/aws-iam` — IAM roles and policies
+- `stack-aws/aws-observability` — CloudWatch, X-Ray
+- `stack-aws/aws-serverless` — Lambda for document processing
+- `sdlc-workflows/ci-cd-and-automation` — GitHub Actions
+
+**Infrastructure produced:**
+
+```
+infra/
+├── cdk/
+│   ├── lib/
+│   │   ├── vpc-stack.ts                 # VPC, subnets, NAT gateways
+│   │   ├── ecs-cluster-stack.ts          # ECS cluster + Fargate
+│   │   ├── ingestion-service-stack.ts    # Ingestion service ECS
+│   │   ├── search-service-stack.ts       # Search service ECS
+│   │   ├── rag-pipeline-stack.ts         # S3 → EventBridge → Lambda
+│   │   ├── rds-stack.ts                  # PostgreSQL RDS
+│   │   ├── elasticache-stack.ts          # Redis ElastiCache
+│   │   └── monitoring-stack.ts           # CloudWatch dashboards
+│   ├── bin/
+│   │   └── app.ts                        # CDK app entry
+│   └── cdk.json                          # CDK config
+├── docker/
+│   ├── ingestion-service/Dockerfile       # Multi-stage Java build
+│   ├── search-service/Dockerfile
+│   └── docker-compose.dev.yml             # Local dev stack
+└── ci/
+    └── .github/workflows/
+        ├── build-test.yml                 # Build + test on PR
+        ├── deploy-staging.yml             # Deploy to staging
+        └── deploy-production.yml          # Production deployment
+```
+
+### Deep Spec Traceability (End-to-End)
+
+Throughout the pipeline, Deep Spec maintains traceability:
+
+```
+REQ-05: "User can search documentation with natural language"
+
+  contracts.md: POST /api/search {query} → {results[], citations[]}
+       ↓
+  design.md: search-service, PineconeVectorStore, RagSearchService
+       ↓
+  tasks.md: T5 (Search API), T6 (Frontend UI)
+       ↓
+  coverage.json: SearchController.java → REQ-05, SearchPage.tsx → REQ-05
+       ↓
+  tests.md: SearchApiIntegrationTest → REQ-05, SearchPage.test.tsx → REQ-05
+       ↓
+  spec-compliance.md: ✓ REQ-05 implemented in SearchController.java
+```
+
+### RAG-Specific Evaluation
+
+For RAG features, the pipeline includes an additional evaluation step:
+
+```yaml
+# In .sdlc-automation-agent.yaml
+rag_evaluation:
+  metrics:
+    retrieval_precision: "> 0.85"         # % of relevant chunks retrieved
+    answer_relevance: "> 0.8"            # % of answers that match query intent
+    citation_accuracy: "> 0.9"          # % of citations that support the answer
+    latency_p95: "< 2000ms"             # End-to-end query latency
+  test_set: "tests/rag/eval/test-set.json"  # Golden test set
+  eval_script: "tests/rag/eval/run-evaluation.py"
+```
+
+Run with:
+```bash
+claude "Evaluate the RAG pipeline. Run the golden test set and report metrics."
+```
+
+### Complete Pipeline Command
+
+To run the ENTIRE pipeline from discovery through deployment for this use case:
+
+```bash
+claude "Build a RAG-powered documentation search for our SaaS platform. Tech stack: Java 21 + Spring Boot 3 backend, Next.js 19 + React frontend with shadcn, AWS ECS Fargate + RDS + S3, LangChain4j with Pinecone vector store and OpenAI embeddings. Run the full SDLC pipeline: discovery, requirements, architecture, implementation, test, review, deploy."
+```
+
+The orchestrator will:
+1. **Auto-detect** Java/Spring → load stack-spring, stack-java packs
+2. **Auto-detect** Next.js → load stack-frontend, shadcn skills
+3. **Auto-detect** AWS → load stack-aws, packs/clouds/aws
+4. **Auto-detect** RAG intent → load stack-ai-ml, LangChain4j patterns
+5. Route through PM → SA → SE (backend + frontend + ai-ml) → QE → CR → PE
+6. Apply Deep Spec traceability at every gate
+7. Track REQ-ID coverage from requirements through code to tests

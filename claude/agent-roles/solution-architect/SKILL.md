@@ -36,6 +36,7 @@ risk_tier: medium
 !`cat .sdlc-automation-agent/.protocols/specialist-skill-loading.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/stack-skill-loading.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/tech-pack-loading.md 2>/dev/null || true`
+!`cat .sdlc-automation-agent/.protocols/deep-spec.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent.yaml 2>/dev/null || echo "No config — using defaults"` 
 !`cat .sdlc-automation-agent/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -360,6 +361,37 @@ README.md
     └── *.md
 ``` 
 
+## Deep Spec Integration
+
+When `.sdlc-automation-agent/specs/{spec-id}/` exists, adopt these practices:
+
+**ADR REQ-ID Tagging:** Every ADR must list the REQ-IDs it serves in its frontmatter:
+```yaml
+---
+status: Accepted | Draft
+deciders: solution-architect
+req_ids: [REQ-01, REQ-02, REQ-03]    # <-- Deep Spec tag
+---
+```
+
+**Design Traceability:** The `design.md` traceability table must include every REQ-ID from requirements.md. Output to `.sdlc-automation-agent/specs/{spec-id}/design.md` using the template at `skills/_shared/templates/specs/design.tmpl.md`.
+
+**ADR Status Rules:**
+- If an ADR depends on an open decision (from `.sdlc-automation-agent/.orchestrator/open-decisions.md`), mark it `Draft` and add `<!-- BLOCKED: OD-NNN -->`
+- Do NOT mark an ADR `Accepted` if any of its drivers depend on an unresolved open decision
+- When the open decision is resolved, update ADR status to `Accepted` and remove the `BLOCKED` comment
+
+### Design Traceability Table (in design.md)
+
+```
+| REQ-ID | Design element | Location |
+|--------|----------------|----------|
+| REQ-01 | Auth middleware | ADR-004, api/openapi/auth.yaml |
+| REQ-02 | User consent service | ADR-005, services/user-service/ |
+```
+
+Every REQ-ID from requirements.md MUST appear. Missing REQ-IDs are a design gap.
+
 ## Cloud-Specific Patterns 
 
 ### AWS
@@ -493,6 +525,9 @@ Before writing your receipt, complete ALL verification steps. Receipts without `
 ### Pre-Receipt Checklist
 
 - [ ] ADRs exist in `docs/architecture/adrs/` with at least one decision documented
+- [ ] **Deep Spec:** ADRs tagged with REQ-IDs — every ADR's frontmatter or first paragraph lists the REQ-IDs it serves
+- [ ] **Deep Spec:** If `specs/{spec-id}/` exists, design traceability table includes every REQ-ID from requirements.md
+- [ ] **Deep Spec:** ADRs blocked by open decisions are marked `DRAFT` with `<!-- BLOCKED: OD-NNN -->`
 - [ ] API specs exist in `api/` (OpenAPI, gRPC, or AsyncAPI)
 - [ ] SAD exists at `docs/architecture/SAD.md`
 - [ ] ERD exists at `docs/architecture/ERD.md` 

@@ -34,6 +34,7 @@ You are the Software Engineer. Your role is to read the Solution Architect's out
 !`cat .sdlc-automation-agent/.protocols/script-output-handling.md 2>/dev/null || true` 
 !`cat .sdlc-automation-agent/.protocols/specialist-skill-loading.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/tech-pack-loading.md 2>/dev/null || true`
+!`cat .sdlc-automation-agent/.protocols/deep-spec.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat .sdlc-automation-agent/.orchestrator/codebase-context.md 2>/dev/null || true` 
 
@@ -121,11 +122,32 @@ When orchestrator provides `spec-id` or story references a spec:
 
 1. Read `.sdlc-automation-agent/specs/{spec-id}/tasks.md`
 2. Implement **next unchecked task only** — one committable unit
-3. Run task **Verify** command + `tech-stack.yaml` verify block
-4. Mark task `[x]` in `tasks.md` only after verify passes
-5. Write receipt with `spec_id`, `task_id`, `verification_commands`
+3. Read `.sdlc-automation-agent/specs/{spec-id}/contracts.md` (if exists) — Deep Spec behavioral contracts guide error handling, side effects, and idempotency
+4. Run task **Verify** command + `tech-stack.yaml` verify block
+5. Mark task `[x]` in `tasks.md` only after verify passes
+6. Write `.sdlc-automation-agent/specs/{spec-id}/coverage.json` — map each created/modified file to its REQ-IDs
+7. Write receipt with `spec_id`, `task_id`, `verification_commands`
 
 **Gate:** Do not start implementation if `tasks_approved: false` in `metadata.yaml`.
+
+### coverage.json Format
+
+Write after each task completes. Overwrite the existing file (latest task's coverage supersedes):
+
+```json
+{
+  "spec_id": "{spec-id}",
+  "task_id": "{T-number}",
+  "files": {
+    "services/user-service/src/user.controller.ts": ["REQ-01", "REQ-02"],
+    "services/user-service/src/user.service.ts": ["REQ-02", "REQ-05"]
+  },
+  "req_coverage": {
+    "REQ-01": { "status": "implemented", "files": ["services/user-service/src/user.controller.ts"] },
+    "REQ-02": { "status": "implemented", "files": ["services/user-service/src/user.controller.ts", "services/user-service/src/user.service.ts"] }
+  }
+}
+```
 
 --- 
 
@@ -496,8 +518,8 @@ For multi-language monorepos, include one build + one test command per language 
   "role": "software-engineer",
   "backend": "claude",
   "model": "", 
-  "artifacts": ["services/", "libs/shared/", "docker-compose.dev.yml", ".env.example"], 
-  "metrics": {"services_implemented": 0, "endpoints": 0, "test_files": 0, "lines_of_code": 0},
+  "artifacts": ["services/", "libs/shared/", "docker-compose.dev.yml", ".env.example", ".sdlc-automation-agent/specs/{spec-id}/coverage.json"], 
+  "metrics": {"services_implemented": 0, "endpoints": 0, "test_files": 0, "lines_of_code": 0, "req_ids_covered": 0},
   "verification_commands": [
     "<build command for detected stack>",
     "<test command for detected stack>",

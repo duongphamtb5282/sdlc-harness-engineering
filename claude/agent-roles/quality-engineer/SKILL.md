@@ -28,6 +28,7 @@ risk_tier: high
 !`cat .sdlc-automation-agent/.protocols/script-output-handling.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/specialist-skill-loading.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/tech-pack-loading.md 2>/dev/null || true`
+!`cat .sdlc-automation-agent/.protocols/deep-spec.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent.yaml 2>/dev/null || echo "No config — using defaults"` 
 !`cat .sdlc-automation-agent/.orchestrator/codebase-context.md 2>/dev/null || true` 
 
@@ -83,6 +84,8 @@ Before writing any tests, read these in this exact order:
 6. `.sdlc-automation-agent/quality-engineer/test-plan.md` — prior test plan (if exists, update rather than recreate) 
 7. `.sdlc-automation-agent/code-reviewer/arch-conformance.md` (if exists) — Code Reviewer Wave A arch conformance findings. Use flagged modules to elevate test priority: modules marked as high-risk receive additional negative test cases and boundary-value coverage beyond standard requirements. If file does not exist (CR Wave A still running or CR was skipped), continue without it — do not block.
 8. `.sdlc-automation-agent/.orchestrator/known-test-gaps.md` (if exists) — ACs the user accepted as untestable at the PLAN testability gate. For each entry, extract the AC-ID and mark it as `ACCEPTED GAP` in working memory **before** building the traceability matrix. Do not treat these ACs as missing coverage — they are deliberate decisions. If the file does not exist, continue without it.
+9. `.sdlc-automation-agent/specs/{spec-id}/contracts.md` (if exists) — Deep Spec behavioral contracts. Every contract error state drives a negative test. Every side effect drives a verification assertion.
+10. `.sdlc-automation-agent/specs/{spec-id}/tests.md` (if exists) — Prior test specification. Update rather than recreate; check REQ-ID coverage gaps.
 
 ## Checkpoint Protocol 
 
@@ -485,7 +488,10 @@ Before marking the skill as complete, verify:
 - [ ] Accessibility scan run on all frontend pages: 0 Critical, 0 Serious violations (if frontend exists)
 - [ ] **If feature flags detected**: Feature Flag Coverage section in test plan populated; every flag has ≥1 Flag=ON test and ≥1 Flag=OFF test; flags scheduled for removal have a removal path test
 - [ ] **If i18n/locale files detected** (`src/i18n/`, `locales/`, `public/locales/`): locale-switching E2E tests written to `tests/e2e/i18n/`, covering locale switch, no raw i18n keys visible, RTL layout (if applicable), and missing-key smoke test
-- [ ] **If frontend components detected**: every untested UI component has a snapshot test in `tests/unit/components/__snapshots__/`; snapshot files are committed to version control; components with interactive logic have behaviour tests (not just snapshots) 
+- [ ] **If frontend components detected**: every untested UI component has a snapshot test in `tests/unit/components/__snapshots__/`; snapshot files are committed to version control; components with interactive logic have behaviour tests (not just snapshots)
+- [ ] **Deep Spec: tests.md written** — `.sdlc-automation-agent/specs/{spec-id}/tests.md` maps every REQ-ID to test files
+- [ ] **Deep Spec: 100% REQ-ID test coverage** — every REQ-ID in requirements.md has ≥1 test case in tests.md
+- [ ] **Deep Spec: contract error states tested** — every error state in contracts.md has a negative test
 
 ---  
 

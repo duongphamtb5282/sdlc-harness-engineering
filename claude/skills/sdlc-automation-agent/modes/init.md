@@ -28,7 +28,7 @@ Analyze the project and generate `.sdlc-automation-agent.yaml`. This mode also a
 ### Scaffold spec + steering folders (greenfield)
 
 ```python
-Bash("mkdir -p .sdlc-automation-agent/specs .sdlc-automation-agent/steering")
+Bash("mkdir -p .sdlc-automation-agent/specs .sdlc-automation-agent/steering .sdlc-automation-agent/.protocols")
 for name, stub in [
   ("product.md", "# Product steering\n\nDomain language, personas, compliance.\n"),
   ("tech.md", "# Tech steering\n\nPointer: docs/architecture/tech-stack.yaml\n"),
@@ -38,6 +38,69 @@ for name, stub in [
   path = f".sdlc-automation-agent/steering/{name}"
   if not Glob(path):
     Write(path, stub)
+```
+
+### Scaffold Deep Spec protocol (greenfield)
+
+When deep spec is enabled in `.sdlc-automation-agent.yaml`, copy the protocol file:
+
+```python
+proto_src = f"{CLAUDE_PLUGIN_ROOT}/skills/_shared/protocols/deep-spec.md"
+proto_dst = ".sdlc-automation-agent/.protocols/deep-spec.md"
+if not Glob(proto_dst):
+    if Glob(proto_src):
+        Bash(f"cp \"{proto_src}\" \"{proto_dst}\"")
+        print(f"Deep Spec protocol installed at {proto_dst}")
+    else:
+        # Generate inline fallback
+        Write(proto_dst, """# Deep Spec Protocol
+
+The spec folder is the SINGLE source of truth. Every agent reads it, validates against it, writes back to it.
+
+## Traceability Chain
+REQ-ID → Contracts → Design → Tasks → Code → Tests → Receipts
+
+## Gates
+- requirements_approved: All REQ-IDs have ACs + behavioral contracts
+- design_approved: Traceability table complete + ADRs tagged
+- tasks_approved: Every REQ-ID in ≥1 task
+- test_coverage_pass: Every REQ-ID has ≥1 test (QE)
+- spec_compliance_pass: Code maps to spec'd REQ-IDs (CR)
+""")
+        print(f"Deep Spec protocol generated at {proto_dst}")
+```
+
+Also scaffold template copies for reference:
+
+```python
+Bash(f"mkdir -p .sdlc-automation-agent/templates/specs")
+for tmpl in ["contracts.tmpl.md", "tests.tmpl.md"]:
+    src = f"{CLAUDE_PLUGIN_ROOT}/skills/_shared/templates/specs/{tmpl}"
+    dst = f".sdlc-automation-agent/templates/specs/{tmpl}"
+    if Glob(src) and not Glob(dst):
+        Bash(f"cp \"{src}\" \"{dst}\"")
+```
+
+Add deep_spec section to generated `.sdlc-automation-agent.yaml`:
+
+```python
+config_text = Read(".sdlc-automation-agent.yaml")
+if "deep_spec:" not in config_text:
+    deep_spec_block = """
+
+# Deep Spec — spec-driven traceability from requirements through delivery
+deep_spec:
+  enabled: true
+  gates:
+    test_coverage: true
+    spec_compliance: true
+  artifacts:
+    contracts: true
+    coverage_report: true
+"""
+    Edit(".sdlc-automation-agent.yaml",
+         old="# sdlc-automation-agent configuration",
+         new=f"# sdlc-automation-agent configuration{deep_spec_block}")
 ```
 
 ```python

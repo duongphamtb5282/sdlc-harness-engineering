@@ -42,6 +42,7 @@ risk_tier: low
 !`cat .sdlc-automation-agent/.protocols/specialist-skill-loading.md 2>/dev/null || cat "${CLAUDE_PLUGIN_ROOT}/skills/_shared/protocols/specialist-skill-loading.md" 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/stack-skill-loading.md 2>/dev/null || cat "${CLAUDE_PLUGIN_ROOT}/skills/_shared/protocols/stack-skill-loading.md" 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/finding-memory.md 2>/dev/null || cat "${CLAUDE_PLUGIN_ROOT}/skills/_shared/protocols/finding-memory.md" 2>/dev/null || true`
+!`cat .sdlc-automation-agent/.protocols/deep-spec.md 2>/dev/null || cat "${CLAUDE_PLUGIN_ROOT}/skills/_shared/protocols/deep-spec.md" 2>/dev/null || true`
 !`cat .sdlc-automation-agent.yaml 2>/dev/null || echo "No config — using defaults"`
 
 **Fallback (if protocols not loaded):** Use AskUserQuestion with options (never open-ended), "Chat about this" last, recommended first. Work continuously. Print progress constantly. Validate inputs before starting — classify missing as Critical (stop), Degraded (warn, continue partial), or Optional (skip silently). Use parallel tool calls for independent reads. Use smart_outline before full Read.  
@@ -258,17 +259,24 @@ Before examining code quality, verify the implementation satisfies its requireme
 1. Get story ACs — run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/_shared/scripts/tracker/tracker_cli.py --project-dir . get-backlog` for all stories, then `tracker_cli.py --project-dir . get-story <story-id>` for Given/When/Then acceptance criteria per story
 2. Read API contracts from `api/` (OpenAPI/AsyncAPI)
 3. Read ADRs from `docs/architecture/`
-4. For each acceptance criterion: trace it to specific code. Can you find the handler, service method, and test that implements it? 
-5. For each API endpoint in the contract: verify it exists in the code with the correct method, path, request schema, and response schema
-6. For each ADR: verify the implementation follows the decision
+4. Read spec folder `.sdlc-automation-agent/specs/{spec-id}/` — Deep Spec requirements.md + contracts.md
+5. Read `.sdlc-automation-agent/specs/{spec-id}/coverage.json` if it exists — check SE's file-to-REQ-ID mapping
+6. For each acceptance criterion: trace it to specific code. Can you find the handler, service method, and test that implements it?
+7. For each REQ-ID in requirements.md and contracts.md: verify the implementation handles all documented error states and side effects from the behavioral contract
+8. For each file in coverage.json: verify that the file only implements the REQ-IDs it claims. Code implementing unspecified behavior is scope creep
+9. For each API endpoint in the contract: verify it exists in the code with the correct method, path, request schema, and response schema
+10. For each ADR: verify the implementation follows the decision
 
 **Output:** Write `.sdlc-automation-agent/code-reviewer/spec-compliance.md` with:
 - A table mapping every acceptance criterion to its implementation location (file:line) or "NOT IMPLEMENTED"
 - A table mapping every ADR to conformance status (Conformant / Partial / Violated)
+- A table mapping every REQ-ID to verification status (Implemented / Partial / Missing) referencing coverage.json
 - Missing functionality list — requirements with no corresponding code
-- Scope creep list — implemented functionality with no corresponding requirement  
+- Scope creep list — implemented functionality with no corresponding requirement
+- Contract deviation list — code behavior that doesn't match contracts.md error states or side effects
 
 **Gate:** If >20% of acceptance criteria are not implemented, STOP the review and report. The code is not ready for quality review — it doesn't meet requirements yet.
+- **Deep Spec gate:** If coverage.json shows REQ-IDs with status "missing", flag each as a finding. Code implementing unassigned REQ-IDs is scope creep.
 
 ### Stage 2 — Code Quality Review
 

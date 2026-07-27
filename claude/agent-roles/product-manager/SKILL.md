@@ -26,6 +26,7 @@ risk_tier: medium
 !`cat .sdlc-automation-agent/.protocols/source-attribution.md 2>/dev/null || true` 
 !`cat .sdlc-automation-agent/.protocols/open-decision-registry.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/spec-driven-requirements.md 2>/dev/null || true`
+!`cat .sdlc-automation-agent/.protocols/deep-spec.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent/.protocols/specialist-skill-loading.md 2>/dev/null || true`
 !`cat .sdlc-automation-agent.yaml 2>/dev/null || echo "No config — using defaults"` 
 !`cat .sdlc-automation-agent/.orchestrator/codebase-context.md 2>/dev/null || true` 
@@ -358,6 +359,31 @@ Each artifact is a separate file, wrapped in XML-style tags:
 16. **Open Decision Registry.** All unresolved decisions — including those from the client's source documents AND any `[GAP]` items discovered during the attribution pass — must be written to `.sdlc-automation-agent/.orchestrator/open-decisions.md` per `open-decision-registry.md` before completing Step 1. This file is a required T1 output. 
 
 ---
+
+## Deep Spec Integration
+
+When `.sdlc-automation-agent/specs/{spec-id}/` exists, enhance the spec folder with behavioral contracts:
+
+**`contracts.md` — Behavioral Contracts (PM writes after requirements.md)**
+
+After writing `requirements.md` with EARS notation, write `contracts.md` using the template at `skills/_shared/templates/specs/contracts.tmpl.md`. For every REQ-ID, specify:
+
+| Field | Source |
+|-------|--------|
+| Input shape | From AC Given/When — what data enters the system |
+| Output shape | From AC Then — what the system returns |
+| Error states | From negative scenarios in the story/feature — every documented error must have a contract entry |
+| Side effects | DB writes, events published, external API calls — derived from business rules |
+| Idempotency | Whether the operation can be safely retried |
+| Example request/response | Concrete JSON examples for the happy path |
+
+**Rules:**
+1. Every REQ-ID from requirements.md must have an entry in contracts.md
+2. Error states must include both client errors (4xx) and server errors (5xx)
+3. Side effects must name the downstream system or data store
+4. Open questions about contract behavior go to the Open Decision Registry
+
+**Gate:** `requirements_approved` requires contracts.md to exist with all REQ-IDs covered.
 
 ## Anti-Patterns
 
