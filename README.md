@@ -262,12 +262,7 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 
 | Library | Skills | Organization |
 |---------|--------|--------------|
-| `core-skills/awesome-copilot/_categorized/` | 353 dev skills | 19 categories (backend, frontend, cloud, database, security, testing, ...) |
 | `core-skills/agentic-awesome/` | 1,198 skills | 16 categories (backend, frontend, mobile, cloud, database, ai-ml, security, ...) |
-| `core-skills/claude-skills/` | 66 experts | 22-stack map |
-| `core-skills/ruflo-skills/` | 21 skills | swarm, memory, SPARC |
-| `supplements/database-design/` | 2 skills | supabase-postgres-best-practices, supabase |
-| `supplements/graphql/` | 14 Apollo skills | client, server, federation, router, schema, operations |
 | `stacks/cloud/terraform/` | 13 HashiCorp skills | code-gen, module-gen, policy, provider-dev |
 | `stacks/*/azure-sdk/` | 117 MS skills | python (39), java (26), dot-net (28), typescript (24) |
 
@@ -350,11 +345,6 @@ nexus-agent-kernel/
     ├── references/            # templates + skill catalogs
     ├── methodologies/         # bmad-method, ruflo/SPARC, general-sdlc, bmad-builder
     ├── core-skills/
-    │   ├── claude-skills/     # 66 domain experts
-    │   ├── awesome-copilot/   # 353 dev skills in 19 categories (_categorized/)
-    │   ├── agentic-awesome/   # 1,198 skills in 16 categories
-    │   ├── claude-software-skills/  # 55 reference guides
-    │   ├── ruflo-skills/      # 21 swarm/memory/SPARC skills
     │   └── ...                # stack repos, vendor skills
     ├── hooks/                 # lifecycle hooks
     ├── mcp/                   # MCP server configs
