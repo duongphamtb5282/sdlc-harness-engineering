@@ -12,7 +12,7 @@ Agent = Model + Harness
 
 ## Origin & Attribution
 
-This repository is a **customized distribution derived from the kernel kernel** — *Breakthrough Method of Agile AI-driven Development* by Brian (BMad) Madison ([MIT license](https://opensource.org/licenses/MIT), v6.10.0, `agent-v01/kernel/`).
+This repository is a **customized distribution derived from the kernel kernel** — *Breakthrough Method of Agile AI-driven Development* by Brian () Madison ([MIT license](https://opensource.org/licenses/MIT), v6.10.0, `agent-v01/kernel/`).
 
 It is published as **proprietary IP**: the third-party skill libraries (`agent-v01/core-skills/`, ~308 MB of vendored open-source skills) and internal design documents (`documents/`) are intentionally **not included** in this repository. To install into a new project, copy `core-skills/` in from the original working copy first — `install-to-project.sh` installs it when present and skips it gracefully when absent.
 
@@ -123,14 +123,14 @@ graph LR
 
 | Stage | Command | Persona | Inputs | Key activity | Gate | Outputs → consumed by |
 |-------|---------|---------|--------|--------------|------|------------------------|
-| Discovery | `/discover` | Mary (bmad-analyst) | raw idea | idea-refine (diverge → converge → sharpen), spec-first framing | **G1:** one-pager approved | `docs/ideas/{name}.md` → deep-spec, `/spec` |
+| Discovery | `/discover` | Mary (-analyst) | raw idea | idea-refine (diverge → converge → sharpen), spec-first framing | **G1:** one-pager approved | `docs/ideas/{name}.md` → deep-spec, `/spec` |
 | Deep-spec | inside `/discover` | Mary + `deep-spec` skill | approved one-pager | interactive problem-space elicitation — flows, edges, error matrix, NFRs, AC seeds, boundaries, open questions; `[ASSUMPTION]` tagging | **G2:** deep-spec approved | `docs/deep-specs/{name}.md` → `/spec` (inherits), `/arch-design` (open questions) |
-| Specification | `/spec` | John (bmad-product-manager) | idea doc + deep-spec | TDD-style stories (each AC testable, RED test named), boundaries, **Roadmap & Timeline (M1…Mn)** | user approval | `SPEC.md` → `/arch-design`, `/plan`, `/qa` |
-| Architecture | `/arch-design` | Winston (bmad-architect) | SPEC (direct entry OK) | ADRs, trade-off ledger (TO-N ↔ ADR), C4 + component + sequence diagrams, API contracts, boundary-safety check | user approval | `docs/adr/`, `docs/trade-offs/`, `docs/architecture/` (+ `.drawio`) → `/plan`, `/qa`, `/build` |
+| Specification | `/spec` | John (-product-manager) | idea doc + deep-spec | TDD-style stories (each AC testable, RED test named), boundaries, **Roadmap & Timeline (M1…Mn)** | user approval | `SPEC.md` → `/arch-design`, `/plan`, `/qa` |
+| Architecture | `/arch-design` | Winston (-architect) | SPEC (direct entry OK) | ADRs, trade-off ledger (TO-N ↔ ADR), C4 + component + sequence diagrams, API contracts, boundary-safety check | user approval | `docs/adr/`, `docs/trade-offs/`, `docs/architecture/` (+ `.drawio`) → `/plan`, `/qa`, `/build` |
 | Planning | `/plan` | PM / analyst | SPEC + architecture + trade-offs | dependency graph, vertical slices, checkpoints, risk ordering | user approval | `tasks/plan.md`, `tasks/todo.md` → `/qa`, `/build` |
 | QA test cases | `/qa` | QA engineer | tasks + SPEC | per-AC test cases (Given/When/Then), coverage map, fixtures, risk-based ordering | user approval | `docs/qa/test-cases.md` → `/build` (RED tests) |
-| Build | `/build` | Amelia (bmad-engineer) | tasks + test cases | TDD RED → GREEN → REFACTOR per task; per-task commits | tests green per task | code + tests, `tests/test-summary.md` → `/review` |
-| Review | `/review` | bmad-review | code + artifacts | 4-lens review — Quality, Security, Architecture, Dependency | 0 Critical findings | `BMAD-REVIEW-REPORT.md`; findings loop into `/plan` (loop-protocol) |
+| Build | `/build` | Amelia (-engineer) | tasks + test cases | TDD RED → GREEN → REFACTOR per task; per-task commits | tests green per task | code + tests, `tests/test-summary.md` → `/review` |
+| Review | `/review` | -review | code + artifacts | 4-lens review — Quality, Security, Architecture, Dependency | 0 Critical findings | `-REVIEW-REPORT.md`; findings loop into `/plan` (loop-protocol) |
 
 ---
 
@@ -215,7 +215,7 @@ your-project/
 ├── CLAUDE.md                  ← project rules
 └── .claude/
     ├── commands/              ← 7 slash commands (auto-discovered)
-    ├── agents/                ← 8 BMAD personas (auto-discovered)
+    ├── agents/                ← 8  personas (auto-discovered)
     ├── skills/                ← 5 libraries, 500+ skills
     ├── hooks/                 ← lifecycle hooks
     ├── plugins/agent-v01/     ← full kernel (self-contained)
@@ -229,13 +229,13 @@ your-project/
 
 | Command | Persona | Purpose | Key SDLC Skills | Produces |
 |---------|---------|---------|-----------------|----------|
-| `/discover` 🧠 | bmad-analyst (Mary) | **Idea → concept.** Refines raw ideas; surfaces assumptions; spec-frames output; mines problem-space depth for approved ideas. | idea-refine, spec-driven-development, deep-spec | `docs/ideas/{name}.md`, `docs/deep-specs/{name}.md` (approved ideas) |
-| `/spec` 📋 | bmad-product-manager (John) | **Concept → contract.** TDD-style user stories — each AC testable, each story names its RED test. | spec-driven-development, test-driven-development | `SPEC.md` (objectives, stories, ACs, roadmap & timeline M1…Mn) |
-| `/arch-design` 🏛 | bmad-architect (Winston) | **Contract → design.** ADRs, trade-off document, API contracts, data models, Draw.io. Direct entry supported (no SPEC needed). | api-and-interface-design, sparc-methodology, bmad-architecture | `docs/adr/*.md`, `docs/trade-offs/*.md`, `docs/architecture/*.md`, `*.drawio` |
-| `/plan` 📊 | bmad-analyst/PM | **Design → tasks.** Dependency-ordered, vertically-sliced tasks. | planning-and-task-breakdown, bmad-create-epics-and-stories | `tasks/plan.md`, `tasks/todo.md` |
-| `/qa` 🧪 | QA engineer (bmad-qa) | **Tasks → test cases.** Per-story unit/API/E2E test cases from acceptance criteria. | bmad-qa-generate-e2e-tests, test-master, test-driven-development, browser-testing-with-devtools | `docs/qa/test-cases.md` (coverage map) |
-| `/build` 🛠 | bmad-engineer (Amelia) | **Tasks → code.** TDD (RED→GREEN→REFACTOR) — RED tests derived from QA test cases. `auto` = full plan in one pass. | test-driven-development, bmad-build, bmad-build-auto, bmad-qa-generate-e2e-tests | Code + tests (traceable to test cases), E2E automation summary, per-task commits |
-| `/review` 🔍 | bmad-review | **Code → verdict.** 4-lens review (Quality, Security, Architecture, Dependency). | security-and-hardening, bmad-review, bmad-code-review | `BMAD-REVIEW-REPORT.md` |
+| `/discover` 🧠 | -analyst (Mary) | **Idea → concept.** Refines raw ideas; surfaces assumptions; spec-frames output; mines problem-space depth for approved ideas. | idea-refine, spec-driven-development, deep-spec | `docs/ideas/{name}.md`, `docs/deep-specs/{name}.md` (approved ideas) |
+| `/spec` 📋 | -product-manager (John) | **Concept → contract.** TDD-style user stories — each AC testable, each story names its RED test. | spec-driven-development, test-driven-development | `SPEC.md` (objectives, stories, ACs, roadmap & timeline M1…Mn) |
+| `/arch-design` 🏛 | -architect (Winston) | **Contract → design.** ADRs, trade-off document, API contracts, data models, Draw.io. Direct entry supported (no SPEC needed). | api-and-interface-design, sparc-methodology, -architecture | `docs/adr/*.md`, `docs/trade-offs/*.md`, `docs/architecture/*.md`, `*.drawio` |
+| `/plan` 📊 | -analyst/PM | **Design → tasks.** Dependency-ordered, vertically-sliced tasks. | planning-and-task-breakdown, -create-epics-and-stories | `tasks/plan.md`, `tasks/todo.md` |
+| `/qa` 🧪 | QA engineer (-qa) | **Tasks → test cases.** Per-story unit/API/E2E test cases from acceptance criteria. | -qa-generate-e2e-tests, test-master, test-driven-development, browser-testing-with-devtools | `docs/qa/test-cases.md` (coverage map) |
+| `/build` 🛠 | -engineer (Amelia) | **Tasks → code.** TDD (RED→GREEN→REFACTOR) — RED tests derived from QA test cases. `auto` = full plan in one pass. | test-driven-development, -build, -build-auto, -qa-generate-e2e-tests | Code + tests (traceable to test cases), E2E automation summary, per-task commits |
+| `/review` 🔍 | -review | **Code → verdict.** 4-lens review (Quality, Security, Architecture, Dependency). | security-and-hardening, -review, -code-review | `-REVIEW-REPORT.md` |
 
 ### Quick Start
 
@@ -253,7 +253,7 @@ your-project/
 
 ## 5. Deep-Spec Methodology
 
-**Deep-spec is discovery's depth layer.** After the `/discover` one-pager is approved (gate 1), the bmad-analyst runs an interactive elicitation pass that mines **problem-space depth** from the idea owner — everything `/spec` and `/qa` would otherwise have to re-ask — into `docs/deep-specs/{name}.md` (gate 2). `/spec` then validates and inherits it; it never re-elicts.
+**Deep-spec is discovery's depth layer.** After the `/discover` one-pager is approved (gate 1), the -analyst runs an interactive elicitation pass that mines **problem-space depth** from the idea owner — everything `/spec` and `/qa` would otherwise have to re-ask — into `docs/deep-specs/{name}.md` (gate 2). `/spec` then validates and inherits it; it never re-elicts.
 
 *Design:* `docs/architecture/deep-spec-discovery.md` · ADR-0001…0005 · `docs/trade-offs/deep-spec-discovery-trade-offs.md` · `docs/qa/test-cases.md`
 
@@ -292,7 +292,7 @@ Each section is elicited with 3–5 questions and **validated by the user before
 - **No re-elicit, no drift** — `/spec` reads `docs/deep-specs/{name}.md` (matching slug) and inherits flows, edges, and AC seeds; the `{name}` identity chain (`ideas → deep-specs → SPEC`) keeps every stage on the same source of truth.
 - **Edges mined while the owner is in the room** — failure modes and error paths are pulled out conversationally at discovery, not discovered at QA three stages later.
 - **Throwaway ideas stay cheap** — the depth pass runs only after gate 1 (one-pager approval), so half-formed ideas never pay the depth tax (ADR-0005).
-- **Assumptions are shown, not silently made** — `[ASSUMPTION]` tagging with validation gates carries bmad-architecture's "shown, not silently made" discipline into discovery.
+- **Assumptions are shown, not silently made** — `[ASSUMPTION]` tagging with validation gates carries -architecture's "shown, not silently made" discipline into discovery.
 - **No authority conflict** — the deep-spec is a *contributor* to SPEC.md, never a co-owner; ADRs, specs, and test suites keep their sole owners (conflict-resolution protocol).
 - **Stronger, cheaper test suites** — `/qa` maps pre-mined edges and errors directly onto test levels instead of hunting for them; 12 kernel test cases (`docs/qa/test-cases.md`) verify the whole journey, including the full E2E: fixture idea → one-pager → deep-spec → SPEC.md inheritance.
 
@@ -317,12 +317,12 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 
 | Phase | Example pattern | Dispatches to |
 |-------|----------------|---------------|
-| Analysis | `explore codebase\|analyze\|research` | bmad-analyst |
-| Planning | `requirements\|user story\|spec\|epic` | bmad-product-manager |
-| Solutioning | `architecture\|system design\|adr` | bmad-architect |
-| Implementation | `implement\|build\|develop\|add feature` | bmad-engineer |
-| Review | `review\|code review\|audit\|test` | bmad-review |
-| Documentation | `document\|docs\|readme` | bmad-tech-writer |
+| Analysis | `explore codebase\|analyze\|research` | -analyst |
+| Planning | `requirements\|user story\|spec\|epic` | -product-manager |
+| Solutioning | `architecture\|system design\|adr` | -architect |
+| Implementation | `implement\|build\|develop\|add feature` | -engineer |
+| Review | `review\|code review\|audit\|test` | -review |
+| Documentation | `document\|docs\|readme` | -tech-writer |
 
 ### Level 2: Tech-specific routing (priority: critical — fires before generic)
 
@@ -358,7 +358,7 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 
 ```
 "Build a Flutter payment screen with Stripe"
-  → ROUTING-TABLE: "implement|build|develop" → bmad-engineer
+  → ROUTING-TABLE: "implement|build|develop" → -engineer
   → Stack: "flutter" → flutter-expert claude-skill
   → Vendor: "stripe" → stripe skill from CATALOG.md
   → Loads: engineer persona + flutter-expert + stripe vendor skill
@@ -439,7 +439,7 @@ nexus-agent-kernel/
     ├── stacks/                # 22 technology stacks
     ├── supplements/           # 10 collections (incl. database-design)
     ├── references/            # templates + skill catalogs
-    ├── methodologies/         # kernel, test/SPARC, general-sdlc, bmad-builder
+    ├── methodologies/         # kernel, test/SPARC, general-sdlc, -builder
     ├── core-skills/
     │   ├── claude-skills/     # 66 domain experts
     │   ├── awesome-copilot/   # 353 dev skills in 19 categories (_categorized/)
