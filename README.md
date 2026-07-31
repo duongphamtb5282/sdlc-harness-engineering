@@ -420,16 +420,4 @@ nexus-agent-kernel/
 ---
 
 ## 12. Further Reading
-
-| Document | Description |
-|----------|-------------|
-| `documents/harness-knowledge.md` | Full harness architecture + how to use + memory fix |
-| `documents/agent-redesign.md` | Design document (3,700+ lines) |
-| `agent-v01/SKILL-INDEX.yaml` | Master catalog of all skills |
-| `agent-v01/ROUTING-TABLE.yaml` | Skill detection rules |
-| `agent-v01/AUTHORITY-MAP.yaml` | Canonical source priorities |
-| `agent-v01/MCP-CONFIG.yaml` | MCP cost tiers + budget enforcement |
-| `agent-v01/protocols/` | 9 behavioral protocol files |
-| `agent-v01/references/templates/` | Output templates (8 files + Draw.io) |
-| `docs/architecture/deep-spec-discovery.md` | Deep-spec design — C4 diagrams, doc-schema contract, change set |
-| `docs/adr/0001…0005-*.md` | Deep-spec decisions (integration, artifact, depth, elicitation, gating) |
+https://github.com/deepseek-ai/DeepSpec
