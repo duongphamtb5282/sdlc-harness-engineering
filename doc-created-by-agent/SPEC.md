@@ -3,7 +3,7 @@
 **Status:** Reviewed
 **Version:** 1.0
 **Date:** 2026-07-31
-**Author:** bmad-product-manager (John)
+**Author:** product-manager (John)
 **Source:** `documents/saas.md` §2 (PRD) + §6 (User Stories); idea: `ideas/saas.md`
 
 ---
