@@ -24,13 +24,14 @@ It is published as **proprietary IP**: the third-party skill libraries (`agent-v
 2. [Technology Stack](#technology-stack)
 3. [Setup & Installation](#setup--installation)
 4. [Commands](#commands)
-5. [Skill Detection](#skill-detection--yes-the-agent-detects-needed-skills-per-task)
-6. [Ruflo Harness](#ruflo-harness--start--use)
-7. [Cost Management](#cost-management)
-8. [Project Structure](#project-structure)
-9. [Protocol Sync](#protocol-sync)
-10. [Validation](#validation)
-11. [Further Reading](#further-reading)
+5. [Deep-Spec Methodology](#5-deep-spec-methodology)
+6. [Skill Detection](#6-skill-detection--yes-the-agent-detects-needed-skills-per-task)
+7. [Ruflo Harness](#7-ruflo-harness--start--use)
+8. [Cost Management](#8-cost-management)
+9. [Project Structure](#9-project-structure)
+10. [Protocol Sync](#10-protocol-sync)
+11. [Validation](#11-validation)
+12. [Further Reading](#12-further-reading)
 
 ---
 
@@ -60,7 +61,7 @@ It is published as **proprietary IP**: the third-party skill libraries (`agent-v
 │  SKILL ECOSYSTEM (what they know)                                │
 │  ┌─────────────────┬─────────────────────┬──────────────────┐    │
 │  │ claude-skills   │ SDLC skills         │ awesome-copilot  │    │
-│  │ (66 domain      │ (27 process         │ (377+ tech       │    │
+│  │ (66 domain      │ (28 process         │ (377+ tech       │    │
 │  │  experts)       │  workflows)         │  skills)         │    │
 │  ├─────────────────┼─────────────────────┼──────────────────┤    │
 │  │ software-skills │ ruflo-skills        │ STACK REPOS      │    │
@@ -77,8 +78,9 @@ It is published as **proprietary IP**: the third-party skill libraries (`agent-v
 │  loop-protocol  freshness-protocol  receipt-protocol  ... (9)    │
 ├──────────────────────────────────────────────────────────────────┤
 │  OUTPUT TEMPLATES (what they produce)                            │
-│  idea-template  spec-template  adr-template  design-doc-template │
-│  trade-off-doc-template  review-template  architecture.drawio    │
+│  idea-template  spec-template  deep-spec-template                │
+│  adr-template  design-doc-template  trade-off-doc-template       │
+│  review-template  architecture.drawio                            │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -91,7 +93,7 @@ User request
   → Mode Dispatch (22-stack → claude-skill map)
   → Supplementary skills by context (SDLC / copilot / ruflo / vendor)
   → Pipeline: /discover → /spec → /arch-design → /plan → /qa → /build → /review
-  → Artifacts: ideas → SPEC → ADRs + trade-off docs + diagrams → tasks → test cases → code + tests → review report
+  → Artifacts: ideas → deep-specs → SPEC → ADRs + trade-off docs + diagrams → tasks → test cases → code + tests → review report
   → Receipt written (protocols/receipts/)
   → Review findings loop back into /plan (loop-protocol)
 ```
@@ -105,7 +107,7 @@ User request
 | **Platform** | Claude Code (CLI/plugin) | Host runtime — tools, filesystem, permissions |
 | **Harness** | Ruflo v3.33 (daemon, AgentDB, swarm, MCP) | Execution: memory, parallelism, orchestration |
 | **Methodology** | BMAD-METHOD (bmm-skills + core-skills) | Canonical SDLC workflow kernel |
-| **Skills** | claude-skills (66) · SDLC (27) · awesome-copilot (377) · software-skills (55) · ruflo-skills (21) | Domain expertise, process workflows, references |
+| **Skills** | claude-skills (66) · SDLC (28) · awesome-copilot (377) · software-skills (55) · ruflo-skills (21) | Domain expertise, process workflows, references |
 | **Stacks** | 22 technology stacks (direct copies) | nestjs, spring-boot, golang, dot-net, java, python, react, nextjs, vue, nuxt, ui-ux, flutter, swift-ui, android, kotlin-compose, react-native, aws, azure, langchain, mlflow, ml-agents, context-engineering |
 | **State** | Ruflo AgentDB (`.swarm/memory.db`) | Cross-session memory |
 | **Config** | YAML (ROUTING-TABLE, SKILL-INDEX, AUTHORITY-MAP, MCP-CONFIG) | Routing, catalogs, authority, cost |
@@ -193,7 +195,7 @@ your-project/
 
 | Command | Persona | Purpose | Key SDLC Skills | Produces |
 |---------|---------|---------|-----------------|----------|
-| `/discover` 🧠 | bmad-analyst (Mary) | **Idea → concept.** Refines raw ideas; surfaces assumptions; spec-frames output. | idea-refine, spec-driven-development | `docs/ideas/{name}.md` |
+| `/discover` 🧠 | bmad-analyst (Mary) | **Idea → concept.** Refines raw ideas; surfaces assumptions; spec-frames output; mines problem-space depth for approved ideas. | idea-refine, spec-driven-development, deep-spec | `docs/ideas/{name}.md`, `docs/deep-specs/{name}.md` (approved ideas) |
 | `/spec` 📋 | bmad-product-manager (John) | **Concept → contract.** TDD-style user stories — each AC testable, each story names its RED test. | spec-driven-development, test-driven-development | `SPEC.md` |
 | `/arch-design` 🏛 | bmad-architect (Winston) | **Contract → design.** ADRs, trade-off document, API contracts, data models, Draw.io. Direct entry supported (no SPEC needed). | api-and-interface-design, sparc-methodology, bmad-architecture | `docs/adr/*.md`, `docs/trade-offs/*.md`, `docs/architecture/*.md`, `*.drawio` |
 | `/plan` 📊 | bmad-analyst/PM | **Design → tasks.** Dependency-ordered, vertically-sliced tasks. | planning-and-task-breakdown, bmad-create-epics-and-stories | `tasks/plan.md`, `tasks/todo.md` |
@@ -204,7 +206,7 @@ your-project/
 ### Quick Start
 
 ```bash
-/discover "Build a multi-tenant appointment scheduler"   # 1. Idea (risk, assumptions, cost, roadmap)
+/discover "Build a multi-tenant appointment scheduler"   # 1. Idea + deep-spec (risk, assumptions, flows, edges, NFRs)
 /spec                                                    # 2. Contract
 /arch-design                                             # 3. Design (ADRs + trade-off doc)
 /plan                                                    # 4. Tasks
@@ -215,7 +217,38 @@ your-project/
 
 ---
 
-## Skill Detection — Yes, the agent detects needed skills per task
+## 5. Deep-Spec Methodology
+
+**Deep-spec is discovery's depth layer.** After the `/discover` one-pager is approved (gate 1), the bmad-analyst runs an interactive elicitation pass that mines **problem-space depth** from the idea owner — everything `/spec` and `/qa` would otherwise have to re-ask — into `docs/deep-specs/{name}.md` (gate 2). `/spec` then validates and inherits it; it never re-elicts.
+
+*Design:* `docs/architecture/deep-spec-discovery.md` · ADR-0001…0005 · `docs/trade-offs/deep-spec-discovery-trade-offs.md` · `docs/qa/test-cases.md`
+
+### The seven sections
+
+| # | Section | What it captures |
+|---|---------|------------------|
+| 1 | User flows & journeys | Actors, happy path, variants, entry/exit points |
+| 2 | Edge cases | Empty, max, duplicate, concurrent, missing, partial |
+| 3 | Error matrix | Failure → expected behavior, severity (tolerable / critical) |
+| 4 | Non-functional requirements | Performance, security, scale, availability — what must *hold* |
+| 5 | Acceptance-criteria seeds | Testable "done" conditions — confirmed into final ACs by `/spec` |
+| 6 | Boundaries | Always / ask-first / never (per spec-driven-development) |
+| 7 | Open questions | Unresolved items with owners — incl. solution-space routing to `/arch-design` |
+
+Each section is elicited with 3–5 questions and **validated by the user before the next**; every inference is tagged `[ASSUMPTION]` with a validation gate; a **fast mode** (draft-then-review) is available on explicit opt-in. **Depth boundary (ADR-0003):** the deep-spec covers problem space only — no data contracts, API contracts, tech stack, or project structure; those stay with `/arch-design`.
+
+### Strengths
+
+- **No re-elicit, no drift** — `/spec` reads `docs/deep-specs/{name}.md` (matching slug) and inherits flows, edges, and AC seeds; the `{name}` identity chain (`ideas → deep-specs → SPEC`) keeps every stage on the same source of truth.
+- **Edges mined while the owner is in the room** — failure modes and error paths are pulled out conversationally at discovery, not discovered at QA three stages later.
+- **Throwaway ideas stay cheap** — the depth pass runs only after gate 1 (one-pager approval), so half-formed ideas never pay the depth tax (ADR-0005).
+- **Assumptions are shown, not silently made** — `[ASSUMPTION]` tagging with validation gates carries bmad-architecture's "shown, not silently made" discipline into discovery.
+- **No authority conflict** — the deep-spec is a *contributor* to SPEC.md, never a co-owner; ADRs, specs, and test suites keep their sole owners (conflict-resolution protocol).
+- **Stronger, cheaper test suites** — `/qa` maps pre-mined edges and errors directly onto test levels instead of hunting for them; 12 kernel test cases (`docs/qa/test-cases.md`) verify the whole journey, including the full E2E: fixture idea → one-pager → deep-spec → SPEC.md inheritance.
+
+---
+
+## 6. Skill Detection — Yes, the agent detects needed skills per task
 
 ### Progressive Skill Routing (Tier 0-3) — lazy loading to avoid huge reads
 
@@ -262,7 +295,12 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 
 | Library | Skills | Organization |
 |---------|--------|--------------|
+| `core-skills/awesome-copilot/_categorized/` | 353 dev skills | 19 categories (backend, frontend, cloud, database, security, testing, ...) |
 | `core-skills/agentic-awesome/` | 1,198 skills | 16 categories (backend, frontend, mobile, cloud, database, ai-ml, security, ...) |
+| `core-skills/claude-skills/` | 66 experts | 22-stack map |
+| `core-skills/ruflo-skills/` | 21 skills | swarm, memory, SPARC |
+| `supplements/database-design/` | 2 skills | supabase-postgres-best-practices, supabase |
+| `supplements/graphql/` | 14 Apollo skills | client, server, federation, router, schema, operations |
 | `stacks/cloud/terraform/` | 13 HashiCorp skills | code-gen, module-gen, policy, provider-dev |
 | `stacks/*/azure-sdk/` | 117 MS skills | python (39), java (26), dot-net (28), typescript (24) |
 
@@ -278,7 +316,7 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 
 ---
 
-## Ruflo Harness — Start & Use
+## 7. Ruflo Harness — Start & Use
 
 ### Start (one command)
 
@@ -314,7 +352,7 @@ ruflo mcp status      # MCP server
 
 ---
 
-## Cost Management
+## 8. Cost Management
 
 | Layer | Mechanism | Prevents |
 |-------|-----------|----------|
@@ -325,7 +363,7 @@ ruflo mcp status      # MCP server
 
 ---
 
-## Project Structure
+## 9. Project Structure
 
 ```
 nexus-agent-kernel/
@@ -343,7 +381,7 @@ nexus-agent-kernel/
     ├── stacks/                # 22 technology stacks
     ├── supplements/           # 10 collections (incl. database-design)
     ├── references/            # templates + skill catalogs
-    ├── methodologies/         # bmad-method, ruflo/SPARC, general-sdlc, bmad-builder
+    ├── methodologies/         # bmad-method, ruflo/SPARC, general-sdlc
     ├── core-skills/
     │   └── ...                # stack repos, vendor skills
     ├── hooks/                 # lifecycle hooks
@@ -360,7 +398,7 @@ nexus-agent-kernel/
 
 ---
 
-## Protocol Sync
+## 10. Protocol Sync
 
 ```bash
 ./agent-v01/scripts/sync-protocols.sh --check   # verify sync
@@ -369,7 +407,7 @@ nexus-agent-kernel/
 
 ---
 
-## Validation
+## 11. Validation
 
 | Validator | Checks | Run |
 |-----------|--------|-----|
@@ -381,7 +419,7 @@ nexus-agent-kernel/
 
 ---
 
-## Further Reading
+## 12. Further Reading
 
 | Document | Description |
 |----------|-------------|
@@ -392,4 +430,6 @@ nexus-agent-kernel/
 | `agent-v01/AUTHORITY-MAP.yaml` | Canonical source priorities |
 | `agent-v01/MCP-CONFIG.yaml` | MCP cost tiers + budget enforcement |
 | `agent-v01/protocols/` | 9 behavioral protocol files |
-| `agent-v01/references/templates/` | Output templates (7 files + Draw.io) |
+| `agent-v01/references/templates/` | Output templates (8 files + Draw.io) |
+| `docs/architecture/deep-spec-discovery.md` | Deep-spec design — C4 diagrams, doc-schema contract, change set |
+| `docs/adr/0001…0005-*.md` | Deep-spec decisions (integration, artifact, depth, elicitation, gating) |
