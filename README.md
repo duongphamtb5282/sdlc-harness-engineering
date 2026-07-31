@@ -12,7 +12,7 @@ Agent = Model + Harness
 
 ## Origin & Attribution
 
-This repository is a **customized distribution derived from the BMAD-METHOD kernel** — *Breakthrough Method of Agile AI-driven Development* by Brian (BMad) Madison ([MIT license](https://opensource.org/licenses/MIT), v6.10.0, `agent-v01/BMAD-METHOD/`).
+This repository is a **customized distribution derived from the kernel kernel** — *Breakthrough Method of Agile AI-driven Development* by Brian (BMad) Madison ([MIT license](https://opensource.org/licenses/MIT), v6.10.0, `agent-v01/kernel/`).
 
 It is published as **proprietary IP**: the third-party skill libraries (`agent-v01/core-skills/`, ~308 MB of vendored open-source skills) and internal design documents (`documents/`) are intentionally **not included** in this repository. To install into a new project, copy `core-skills/` in from the original working copy first — `install-to-project.sh` installs it when present and skips it gracefully when absent.
 
@@ -26,7 +26,7 @@ It is published as **proprietary IP**: the third-party skill libraries (`agent-v
 4. [Commands](#commands)
 5. [Deep-Spec Methodology](#5-deep-spec-methodology)
 6. [Skill Detection](#6-skill-detection--yes-the-agent-detects-needed-skills-per-task)
-7. [Ruflo Harness](#7-ruflo-harness--start--use)
+7. [test Harness](#7-test-harness--start--use)
 8. [Cost Management](#8-cost-management)
 9. [Project Structure](#9-project-structure)
 10. [Protocol Sync](#10-protocol-sync)
@@ -42,7 +42,7 @@ It is published as **proprietary IP**: the third-party skill libraries (`agent-v
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  EXECUTION HARNESS (how agents run — runtime)                   │
-│  Ruflo daemon (7 workers) · AgentDB memory · swarm (mesh, max 5)│
+│  test daemon (7 workers) · AgentDB memory · swarm (mesh, max 5)│
 │  MCP server (memory_store, swarm_init, flow-nexus) · hooks       │
 │  .claude-flow/ · .swarm/memory.db · .mcp.json · .claude/settings│
 ├──────────────────────────────────────────────────────────────────┤
@@ -64,13 +64,13 @@ It is published as **proprietary IP**: the third-party skill libraries (`agent-v
 │  │ (66 domain      │ (28 process         │ (377+ tech       │    │
 │  │  experts)       │  workflows)         │  skills)         │    │
 │  ├─────────────────┼─────────────────────┼──────────────────┤    │
-│  │ software-skills │ ruflo-skills        │ STACK REPOS      │    │
+│  │ software-skills │ test-skills        │ STACK REPOS      │    │
 │  │ (55 reference   │ (21 — SPARC, swarm, │ (22 technology   │    │
 │  │  guides)        │  AgentDB memory)    │  stacks)         │    │
 │  └─────────────────┴─────────────────────┴──────────────────┘    │
 ├──────────────────────────────────────────────────────────────────┤
 │  METHODOLOGY (canonical kernel)                                  │
-│  BMAD-METHOD — 5 phases: analysis → planning → solutioning →     │
+│  kernel — 5 phases: analysis → planning → solutioning →     │
 │  implementation → review · 32 skills · core skills · v6 shims    │
 ├──────────────────────────────────────────────────────────────────┤
 │  PROTOCOLS (how they behave)                                     │
@@ -91,7 +91,7 @@ User request
   → Skill Detection (ROUTING-TABLE: 16 patterns → persona + skill + cost)
   → Persona First Action (loads protocols + canonical kernel skill)
   → Mode Dispatch (22-stack → claude-skill map)
-  → Supplementary skills by context (SDLC / copilot / ruflo / vendor)
+  → Supplementary skills by context (SDLC / copilot / test / vendor)
   → Pipeline: /discover → /spec → /arch-design → /plan → /qa → /build → /review
   → Artifacts: ideas → deep-specs → SPEC → ADRs + trade-off docs + diagrams → tasks → test cases → code + tests → review report
   → Receipt written (protocols/receipts/)
@@ -139,11 +139,11 @@ graph LR
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | **Platform** | Claude Code (CLI/plugin) | Host runtime — tools, filesystem, permissions |
-| **Harness** | Ruflo v3.33 (daemon, AgentDB, swarm, MCP) | Execution: memory, parallelism, orchestration |
-| **Methodology** | BMAD-METHOD (bmm-skills + core-skills) | Canonical SDLC workflow kernel |
-| **Skills** | claude-skills (66) · SDLC (28) · awesome-copilot (377) · software-skills (55) · ruflo-skills (21) | Domain expertise, process workflows, references |
+| **Harness** | test v3.33 (daemon, AgentDB, swarm, MCP) | Execution: memory, parallelism, orchestration |
+| **Methodology** | kernel (bmm-skills + core-skills) | Canonical SDLC workflow kernel |
+| **Skills** | claude-skills (66) · SDLC (28) · awesome-copilot (377) · software-skills (55) · test-skills (21) | Domain expertise, process workflows, references |
 | **Stacks** | 22 technology stacks (direct copies) | nestjs, spring-boot, golang, dot-net, java, python, react, nextjs, vue, nuxt, ui-ux, flutter, swift-ui, android, kotlin-compose, react-native, aws, azure, langchain, mlflow, ml-agents, context-engineering |
-| **State** | Ruflo AgentDB (`.swarm/memory.db`) | Cross-session memory |
+| **State** | test AgentDB (`.swarm/memory.db`) | Cross-session memory |
 | **Config** | YAML (ROUTING-TABLE, SKILL-INDEX, AUTHORITY-MAP, MCP-CONFIG) | Routing, catalogs, authority, cost |
 | **Scripts** | Bash + Ruby (`agent-v01/scripts/`) | Install, start, validate, sync |
 | **Output** | Markdown + Draw.io | SPEC, ADRs, trade-off docs, architecture diagrams, QA test cases, review reports |
@@ -198,11 +198,11 @@ claude plugin marketplace add <your-repo>
 claude plugin install nexus-agent-kernel@nexus-agent-kernel-marketplace
 ```
 
-### Option D: Ruflo execution harness (optional but recommended)
+### Option D: test execution harness (optional but recommended)
 
 ```bash
 # In the target project, after install
-npx ruflo init --minimal
+npx test init --minimal
 ./.claude/plugins/agent-v01/scripts/start-harness.sh
 
 # Intel Mac fix (onnxruntime darwin/x64): see documents/harness-knowledge.md §5.2
@@ -220,7 +220,7 @@ your-project/
     ├── hooks/                 ← lifecycle hooks
     ├── plugins/agent-v01/     ← full kernel (self-contained)
     ├── helpers/               ← status line helpers
-    └── .mcp.json              ← ruflo harness MCP
+    └── .mcp.json              ← test harness MCP
 ```
 
 ---
@@ -339,7 +339,7 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 | `dotnet`/`.net` | `stacks/backend/dot-net/` (incl. 28 azure-sdk-dotnet) + csharp-developer |
 | `typescript` | `stacks/frontend/typescript-azure-sdk/` (24 skills) + typescript-pro |
 | `stripe`, `supabase`, `auth0` | vendor skill from `supplements/database-design/` |
-| `swarm`, `memory`, `parallel` | ruflo skill (swarm-orchestration, agentdb) |
+| `swarm`, `memory`, `parallel` | test skill (swarm-orchestration, agentdb) |
 
 ### Level 3: Categorized skill libraries (unique skills by task)
 
@@ -348,7 +348,7 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 | `core-skills/awesome-copilot/_categorized/` | 353 dev skills | 19 categories (backend, frontend, cloud, database, security, testing, ...) |
 | `core-skills/agentic-awesome/` | 1,198 skills | 16 categories (backend, frontend, mobile, cloud, database, ai-ml, security, ...) |
 | `core-skills/claude-skills/` | 66 experts | 22-stack map |
-| `core-skills/ruflo-skills/` | 21 skills | swarm, memory, SPARC |
+| `core-skills/test-skills/` | 21 skills | swarm, memory, SPARC |
 | `supplements/database-design/` | 2 skills | supabase-postgres-best-practices, supabase |
 | `supplements/graphql/` | 14 Apollo skills | client, server, federation, router, schema, operations |
 | `stacks/cloud/terraform/` | 13 HashiCorp skills | code-gen, module-gen, policy, provider-dev |
@@ -366,7 +366,7 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 
 ---
 
-## 7. Ruflo Harness — Start & Use
+## 7. test Harness — Start & Use
 
 ### Start (one command)
 
@@ -379,18 +379,18 @@ The kernel has ~1,800 skills. Instead of embedding all skill tables in agent fil
 ### Cross-session memory (the "I can't remember" fix)
 
 ```bash
-ruflo memory store -k <key> -v "<value>"   # save
-ruflo memory get -k <key>                   # recall (any session)
+test memory store -k <key> -v "<value>"   # save
+test memory get -k <key>                   # recall (any session)
 ./agent-v01/scripts/test-harness-memory.sh  # verify persistence
 ```
 
 ### Manual steps
 
 ```bash
-ruflo daemon start    # 7 background workers
-ruflo memory init     # memory database
-ruflo swarm init      # mesh topology, max 5 agents
-ruflo mcp status      # MCP server
+test daemon start    # 7 background workers
+test memory init     # memory database
+test swarm init      # mesh topology, max 5 agents
+test mcp status      # MCP server
 ```
 
 > **Intel Mac note:** env vars in `~/.zshrc`:
@@ -417,9 +417,9 @@ ruflo mcp status      # MCP server
 
 ```
 nexus-agent-kernel/
-├── .claude-flow/              # Ruflo runtime (config, data, logs, sessions)
-├── .swarm/memory.db           # Ruflo memory database
-├── .mcp.json                  # Ruflo MCP server config
+├── .claude-flow/              # runtime (config, data, logs, sessions)
+├── .swarm/memory.db           # memory database
+├── .mcp.json                  # MCP server config
 ├── CLAUDE.md                  # Project rules
 ├── documents/                 # Architecture docs (harness-knowledge.md, etc.)
 ├── docs/                      # Pipeline artifacts (per stage, gated)
@@ -431,7 +431,7 @@ nexus-agent-kernel/
 │   └── qa/                    # test cases + coverage map — from /qa
 ├── tasks/                     # plan.md + todo.md — from /plan
 ├── agent-v01/
-    ├── agents/                # 8 BMAD personas
+    ├── agents/                # 8 personas
     ├── protocols/             # 9 protocols (synced)
     ├── scripts/               # ALL scripts (install, start, validate, sync)
     ├── .claude/commands/      # 7 slash commands (source)
@@ -439,17 +439,17 @@ nexus-agent-kernel/
     ├── stacks/                # 22 technology stacks
     ├── supplements/           # 10 collections (incl. database-design)
     ├── references/            # templates + skill catalogs
-    ├── methodologies/         # bmad-method, ruflo/SPARC, general-sdlc, bmad-builder
+    ├── methodologies/         # kernel, test/SPARC, general-sdlc, bmad-builder
     ├── core-skills/
     │   ├── claude-skills/     # 66 domain experts
     │   ├── awesome-copilot/   # 353 dev skills in 19 categories (_categorized/)
     │   ├── agentic-awesome/   # 1,198 skills in 16 categories
     │   ├── claude-software-skills/  # 55 reference guides
-    │   ├── ruflo-skills/      # 21 swarm/memory/SPARC skills
+    │   ├── test-skills/      # 21 swarm/memory/SPARC skills
     │   └── ...                # stack repos, vendor skills
     ├── hooks/                 # lifecycle hooks
     ├── mcp/                   # MCP server configs
-    ├── BMAD-METHOD/           # canonical kernel (5 phases, 32 skills)
+    ├── kernel/           # canonical kernel (5 phases, 32 skills)
     ├── SKILL-INDEX.yaml       # master catalog
     ├── SKILL-ROUTER.yaml     # Tier 2: lazy skill routing index
     ├── skills/profiles/      # Tier 3: per-agent skill profiles (generated)
