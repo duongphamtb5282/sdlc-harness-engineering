@@ -1,3 +1,0 @@
-[submodule "vendor/self-evolving-agent"]
-	path = vendor/self-evolving-agent
-	url = https://github.com/miles990/self-evolving-agent.git

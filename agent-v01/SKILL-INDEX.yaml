@@ -1,0 +1,397 @@
+# agent-v01 Skill Index
+# Auto-generated catalog of all skills in the agent-v01 directory tree.
+# Generated: 2026-07-30
+
+stacks:
+  backend:
+    - name: nestjs
+      path: stacks/backend/nestjs
+      category: stack-backend
+      technologies: [nestjs, typescript, nodejs]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: high
+    - name: spring-boot
+      path: stacks/backend/spring-boot
+      category: stack-backend
+      technologies: [spring-boot, java]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: high
+    - name: java
+      path: stacks/backend/java
+      category: stack-backend
+      technologies: [java]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: golang
+      path: stacks/backend/golang
+      category: stack-backend
+      technologies: [golang]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: dot-net
+      path: stacks/backend/dot-net
+      category: stack-backend
+      technologies: [dotnet, csharp]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+  frontend:
+    - name: react
+      path: stacks/frontend/react
+      category: stack-frontend
+      technologies: [react, typescript, javascript]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: high
+    - name: nextjs
+      path: stacks/frontend/nextjs
+      category: stack-frontend
+      technologies: [nextjs, react, typescript]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: high
+    - name: vue
+      path: stacks/frontend/vue
+      category: stack-frontend
+      technologies: [vue, javascript]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: nuxt
+      path: stacks/frontend/nuxt
+      category: stack-frontend
+      technologies: [nuxt, vue, javascript]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: ui-ux
+      path: stacks/frontend/ui-ux
+      category: stack-frontend
+      technologies: [ui, ux, design, tailwind, css]
+      agents: [bmad-agent-ux-designer, bmad-agent-dev]
+      phases: [planning, implementation]
+      priority: high
+  mobile:
+    - name: swift-ui
+      path: stacks/mobile/swift-ui
+      category: stack-mobile
+      technologies: [swift, swiftui, ios, apple]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: android
+      path: stacks/mobile/android
+      category: stack-mobile
+      technologies: [android, kotlin, java]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: kotlin-compose
+      path: stacks/mobile/kotlin-compose
+      category: stack-mobile
+      technologies: [kotlin, compose, jetpack]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: flutter
+      path: stacks/mobile/flutter
+      category: stack-mobile
+      technologies: [flutter, dart]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: react-native
+      path: stacks/mobile/react-native
+      category: stack-mobile
+      technologies: [react-native, javascript, typescript]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+  cloud:
+    - name: aws
+      path: stacks/cloud/aws
+      category: stack-cloud
+      technologies: [aws, ecs, lambda, s3, dynamodb]
+      agents: [bmad-agent-dev, platform-engineer]
+      phases: [implementation, infrastructure]
+      priority: high
+    - name: azure
+      path: stacks/cloud/azure
+      category: stack-cloud
+      technologies: [azure, functions, blob]
+      agents: [bmad-agent-dev, platform-engineer]
+      phases: [implementation, infrastructure]
+      priority: medium
+  ai:
+    - name: langchain
+      path: stacks/ai/langchain
+      category: stack-ai
+      technologies: [langchain, llm, rag]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: medium
+    - name: mlflow
+      path: stacks/ai/mlflow
+      category: stack-ai
+      technologies: [mlflow, ml, experiment-tracking]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: low
+    - name: ml-agents
+      path: stacks/ai/ml-agents
+      category: stack-ai
+      technologies: [machine-learning, agents]
+      agents: [bmad-agent-dev]
+      phases: [implementation]
+      priority: low
+    - name: context-engineering
+      path: stacks/ai/context-engineering
+      category: stack-ai
+      technologies: [context, prompt, llm]
+      agents: [bmad-agent-dev, bmad-agent-analyst]
+      phases: [analysis, implementation]
+      priority: medium
+
+agent_skills:
+  - name: polymath
+    path: agent-skills/polymath
+    category: agent-skill
+    description: Brainstorming and ideation skill for creative exploration
+    agents: [bmad-agent-analyst]
+    phases: [analysis]
+    priority: high
+  - name: bmad-agent-analyst
+    path: agent-skills/bmad-agent-analyst
+    category: agent-skill
+    description: Business analysis and requirements gathering
+    agents: [bmad-agent-analyst]
+    phases: [analysis]
+    priority: high
+  - name: bmad-agent-pm
+    path: agent-skills/bmad-agent-pm
+    category: agent-skill
+    description: Product management and backlog refinement
+    agents: [bmad-agent-pm]
+    phases: [planning]
+    priority: high
+  - name: bmad-agent-architect
+    path: agent-skills/bmad-agent-architect
+    category: agent-skill
+    description: System architecture and solution design
+    agents: [bmad-agent-architect]
+    phases: [solutioning]
+    priority: high
+  - name: bmad-agent-dev
+    path: agent-skills/bmad-agent-dev
+    category: agent-skill
+    description: Implementation and development
+    agents: [bmad-agent-dev]
+    phases: [implementation]
+    priority: high
+  - name: bmad-agent-ux-designer
+    path: agent-skills/bmad-agent-ux-designer
+    category: agent-skill
+    description: UX design and user interface planning
+    agents: [bmad-agent-ux-designer]
+    phases: [planning]
+    priority: medium
+  - name: bmad-agent-tech-writer
+    path: agent-skills/bmad-agent-tech-writer
+    category: agent-skill
+    description: Technical documentation and writing
+    agents: [bmad-agent-tech-writer]
+    phases: [documentation]
+    priority: medium
+  - name: bmad-code-review
+    path: agent-skills/bmad-code-review
+    category: agent-skill
+    description: Code review and quality assessment
+    agents: [bmad-code-review]
+    phases: [review]
+    priority: high
+  - name: bmad-qa
+    path: agent-skills/bmad-qa
+    category: agent-skill
+    description: E2E test generation and quality assurance
+    agents: [bmad-qa]
+    phases: [testing]
+    priority: high
+
+supplements:
+  - name: system-design
+    path: supplements/system-design
+    category: supplement
+    description: System design skills and patterns
+    phases: [solutioning, review]
+    priority: high
+  - name: code-review
+    path: supplements/code-review
+    category: supplement
+    description: Code review methodology and checklist
+    phases: [review]
+    priority: high
+  - name: staff-engineer
+    path: supplements/staff-engineer
+    category: supplement
+    description: Staff engineering patterns and leadership
+    phases: [analysis, solutioning]
+    priority: medium
+  - name: toolkit
+    path: supplements/toolkit
+    category: supplement
+    description: General claude code toolkit and utilities
+    phases: [all]
+    priority: medium
+  - name: engineering-patterns
+    path: supplements/engineering-patterns
+    category: supplement
+    description: Software engineering patterns and practices
+    phases: [implementation]
+    priority: medium
+  - name: designer-skills
+    path: supplements/designer-skills
+    category: supplement
+    description: Design research and operations skills (owl-listener/designer-skills)
+    phases: [planning, implementation]
+    priority: medium
+  - name: addyosmani-agent-skills
+    path: supplements/addyosmani-agent-skills
+    category: supplement
+    description: Production-grade engineering skills (addyosmani/agent-skills)
+    phases: [all]
+    priority: medium
+  - name: ruflo-memory
+    path: supplements/ruflo-memory
+    category: supplement
+    description: AgentDB persistent memory and reasoning skills (ruvnet/ruflo)
+    phases: [all]
+    priority: medium
+  - name: ruflo-skills
+    path: core-skills/ruflo-skills
+    category: supplement
+    description: Ruflo unique skills — swarm orchestration, memory, SPARC methodology companions
+    phases: [all]
+    priority: medium
+  - name: database-design
+    path: supplements/database-design
+    category: supplement
+    description: Database design skills — supabase-postgres-best-practices, supabase
+    phases: [all]
+    priority: medium
+  - name: ai-agents
+    path: supplements/ai-agents
+    category: supplement
+    description: AI agent skills (qodex) — multi-agent orchestration, LLM fine-tuning, voice AI, RAG, deep research
+    phases: [all]
+    priority: medium
+  - name: graphql
+    path: supplements/graphql
+    category: supplement
+    description: Apollo GraphQL skills — client, server, federation, router, schema, operations (14 skills)
+    phases: [all]
+    priority: medium
+
+methodologies:
+  - name: bmad-method
+    path: methodologies/bmad-method
+    category: methodology
+    description: BMAD-METHOD kernel — canonical orchestrator and methodology
+    phases: [all]
+    priority: high
+  - name: ruflo
+    path: methodologies/ruflo
+    category: methodology
+    description: Ruflo SPARC methodology — Specification, Pseudocode, Architecture, Refinement, Completion (17 modes, swarm-capable)
+    phases: [all]
+    priority: medium
+  - name: general-sdlc
+    path: methodologies/general-sdlc
+    category: methodology
+    description: General SDLC agent skills (agent-skills-general-sdlc)
+    phases: [all]
+    priority: medium
+  - name: bmad-builder
+    path: methodologies/bmad-builder
+    category: methodology
+    description: BMAD builder framework
+    phases: [all]
+    priority: high
+
+domains:
+  - name: ecommerce
+    path: domains/ecommerce
+    category: domain
+    description: E-commerce domain skills
+    technologies: [shopify, commerce, payments]
+    phases: [all]
+    priority: medium
+
+references:
+  - name: agentic-awesome-skills
+    path: references/agentic-awesome-skills
+    category: reference
+    description: Agentic awesome skills catalog (sickn33/agentic-awesome-skills) — 1,905 skills with categories
+    phases: [all]
+    priority: low
+  - name: agentic-awesome-distributed
+    path: core-skills/agentic-awesome
+    category: skill-library
+    description: 1,198 agentic-awesome skills distributed by category (backend, frontend, mobile, cloud, database, ai-ml, security, devops, testing, architecture, code-quality, ai-agents, mcp, workflow, tools, specialized)
+    phases: [all]
+    priority: medium
+  - name: awesome-copilot-categorized
+    path: core-skills/awesome-copilot/_categorized
+    category: skill-library
+    description: 353 awesome-copilot dev skills in 19 categories (backend, frontend, cloud, database, security, testing, etc.)
+    phases: [all]
+    priority: medium
+
+protocols:
+  - name: ux-protocol
+    path: protocols/ux-protocol.md
+    category: protocol
+    description: UX interaction rules
+  - name: visual-identity
+    path: protocols/visual-identity.md
+    category: protocol
+    description: Visual formatting standards
+  - name: freshness-protocol
+    path: protocols/freshness-protocol.md
+    category: protocol
+    description: Temporal sensitivity rules
+  - name: boundary-safety
+    path: protocols/boundary-safety.md
+    category: protocol
+    description: System boundary patterns
+  - name: conflict-resolution
+    path: protocols/conflict-resolution.md
+    category: protocol
+    description: Authority hierarchy and dedup
+  - name: receipt-protocol
+    path: protocols/receipt-protocol.md
+    category: protocol
+    description: Proof of completion standard
+  - name: input-validation
+    path: protocols/input-validation.md
+    category: protocol
+    description: Input classification and routing
+  - name: tool-efficiency
+    path: protocols/tool-efficiency.md
+    category: protocol
+    description: Tool selection rules
+  - name: loop-protocol
+    path: protocols/loop-protocol.md
+    category: protocol
+    description: Oracle-driven iteration rules
+
+production_grade:
+  - name: production-grade-plugin
+    path: core-skills/claude-code-production-grade-plugin/skills
+    category: skill-library
+    description: 14 production-grade persona skills — 7 unique (frontend-engineer, data-scientist, devops, sre, security-engineer, production-grade, skill-maker) + 7 overlapping (code-reviewer, product-manager, etc.)
+    phases: [all]
+    priority: medium

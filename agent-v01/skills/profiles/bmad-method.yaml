@@ -1,0 +1,9 @@
+---
+persona: bmad-method
+phases:
+- orchestration
+core_skills: []
+additional_skills: []
+conditional_skills: {}
+total_skills: 0
+load_strategy: lazy — load SKILL.md only when task matches

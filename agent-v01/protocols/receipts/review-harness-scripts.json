@@ -1,0 +1,34 @@
+{
+  "role": "code-reviewer",
+  "backend": "claude",
+  "model": "deepseek-v4-flash",
+  "artifacts": [
+    "BMAD-REVIEW-REPORT.md"
+  ],
+  "metrics": {
+    "lenses_applied": 4,
+    "scripts_verified": 9,
+    "findings_total": 2,
+    "findings_critical": 0,
+    "findings_high": 0,
+    "findings_medium": 1,
+    "findings_low": 1,
+    "harness_status": "WORKING",
+    "daemon_status": "RUNNING (PID 51783)",
+    "mcp_status": "RUNNING (PID 51920)",
+    "memory_test": "PASS",
+    "yaml_files_validated": 372
+  },
+  "verification_commands": [
+    "bash agent-v01/scripts/validate-harness.sh",
+    "bash agent-v01/scripts/start-harness.sh --status",
+    "bash agent-v01/scripts/test-harness-memory.sh",
+    "bash agent-v01/scripts/validate-structure.sh",
+    "bash agent-v01/scripts/validate-hooks.sh",
+    "bash agent-v01/scripts/validate-skills-frontmatter.sh",
+    "ruby agent-v01/scripts/validate-yaml.rb",
+    "bash agent-v01/scripts/sync-protocols.sh --check",
+    "bash agent-v01/scripts/install-to-project.sh"
+  ],
+  "completed_at": "2026-07-31T00:00:00Z"
+}

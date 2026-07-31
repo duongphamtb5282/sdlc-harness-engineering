@@ -1,0 +1,66 @@
+# MCP Configuration
+# Gating rules and budget limits for MCP server access.
+
+## Gating Rules
+
+gating_rules:
+  concurrent_servers:
+    max_per_agent: 3
+    total_max: 10
+    behavior: "Queue additional requests until a slot opens"
+
+  cost_tier:
+    free:
+      servers: [github]
+      budget: null
+      priority: high
+
+    low:
+      servers: [slack, confluence]
+      budget: 1000
+      unit: "requests/day"
+      priority: medium
+
+    medium:
+      servers: [jira, datadog]
+      budget: 500
+      unit: "requests/day"
+      priority: medium
+
+    high:
+      servers: [figma]
+      budget: 100
+      unit: "requests/day"
+      priority: low
+
+## Budget Enforcement
+
+budget_enforcement:
+  mode: soft  # soft = warn at 80%, hard block at 100%
+  warn_at: 0.8
+  block_at: 1.0
+  reset: daily
+
+## Error Handling
+
+error_handling:
+  timeout_ms: 30000
+  retry:
+    max_attempts: 2
+    backoff_ms: 1000
+  circuit_breaker:
+    failure_threshold: 5
+    reset_after_ms: 60000
+
+## Access Control
+
+access_control:
+  mode: allowlist  # deny by default, allow specific
+  restricted_operations:
+    - name: write
+      servers: [jira, slack, confluence]
+      require_confirmation: true
+    - name: admin
+      servers: [jira]
+      require_confirmation: true
+      allowed_agents: [bmad-product-manager]

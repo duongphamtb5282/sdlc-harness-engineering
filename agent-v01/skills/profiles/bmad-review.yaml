@@ -1,0 +1,17 @@
+---
+persona: bmad-review
+phases:
+- review
+core_skills:
+- code-reviewer
+- security-reviewer
+- test-master
+additional_skills:
+- chaos-engineer
+- fullstack-guardian
+- secure-code-guardian
+- security-and-hardening (SDLC)
+- sre-engineer
+conditional_skills: {}
+total_skills: 8
+load_strategy: lazy — load SKILL.md only when task matches

@@ -1,0 +1,95 @@
+<mxfile host="app.diagrams.net" modified="2026-07-31T00:00:00.000Z" agent="bmad-architect" version="24.0.0">
+  <diagram name="Skill Routing Architecture" id="page-skill-routing">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- User Task -->
+        <mxCell id="task" value="👤 User Task&#10;&#34;Build a Flutter payment screen&#34;" style="shape=umlActor;whiteSpace=wrap;html=1;fillColor=#4A90D9;strokeColor=#2C5F8A;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="60" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 0 -->
+        <mxCell id="tier0" value="TIER 0 — ROUTING-TABLE.yaml&#10;pattern → persona + cost tier&#10;~1KB · loaded once" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#CC7A00;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="220" y="60" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 1 -->
+        <mxCell id="tier1" value="TIER 1 — Agent Stub (slim)&#10;persona + workflow only&#10;~70 lines · no skill tables&#10;→ points to profile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2ECC71;strokeColor=#1A9C54;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="220" y="180" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Decision -->
+        <mxCell id="decision" value="Skill needed?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#999999;fontColor=#333333;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="520" y="185" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Work (no skill) -->
+        <mxCell id="work" value="Do the work&#10;(common path — 0 skill reads)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="740" y="120" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2 -->
+        <mxCell id="tier2" value="TIER 2 — SKILL-ROUTER.yaml&#10;persona → phase → category → skills&#10;~300 lines · single source of truth" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6B5B95;strokeColor=#4D3E6E;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="220" y="330" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 3 -->
+        <mxCell id="tier3" value="TIER 3 — Per-agent profile&#10;profiles/bmad-engineer.yaml&#10;ONLY this agent's skills" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E74C3C;strokeColor=#C0392B;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="520" y="330" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Load specific -->
+        <mxCell id="load" value="Load ONLY needed SKILL.md&#10;(flutter-expert + flutter stack)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#CC7A00;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="520" y="440" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Receipt -->
+        <mxCell id="receipt" value="Receipt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#FFFFFF;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="740" y="440" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Skill libraries -->
+        <mxCell id="libs" value="Skill Libraries (~1,800)&#10;claude-skills (66) · awesome-copilot (368)&#10;agentic-awesome (1,270) · SDLC (24)&#10;software-skills (56) · ruflo (20)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8E8E8;strokeColor=#999999;fontColor=#333333;fontStyle=1;arcSize=10;" parent="1" vertex="1">
+          <mxGeometry x="40" y="330" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Connections -->
+        <mxCell id="c-task-t0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="task" target="tier0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-t0-t1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tier0" target="tier1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-t1-dec" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tier1" target="decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-dec-work" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#999999;strokeWidth=1.5;dashed=1;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="decision" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-dec-t2" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="decision" target="tier2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-t2-t3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tier2" target="tier3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-t3-load" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tier3" target="load">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-load-receipt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#666666;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="load" target="receipt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c-libs-t2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#999999;strokeWidth=1.5;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="libs" target="tier2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="Legend: solid = load path · dashed = no-skill path / reference" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="40" y="520" width="400" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

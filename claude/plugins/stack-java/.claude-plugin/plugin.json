@@ -1,7 +1,0 @@
-{
-  "name": "stack-java",
-  "description": "Java development skills — beyond Spring Boot, covering core Java, concurrency, performance, testing",
-  "version": "1.0.0",
-  "keywords": ["java", "jvm"],
-  "skills": "./skills"
-}

@@ -1,9 +1,0 @@
-{
-  "name": "project-management",
-  "description": "Project management skills — Jira MCP integration, issue tracking, sprint planning, story management, Linear automation, QA test planning.",
-  "version": "2.0.0",
-  "author": { "name": "Hano Engineering" },
-  "license": "MIT",
-  "keywords": ["jira", "linear", "project-management", "agile", "scrum", "kanban", "qa"],
-  "skills": "./skills"
-}

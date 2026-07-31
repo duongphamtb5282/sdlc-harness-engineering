@@ -1,6 +1,90 @@
-# macOS
+# ═══════════════════════════════════════════════════════════════
+# Nexus Agent Kernel — .gitignore
+# Published as proprietary IP: third-party libraries + private
+# documents excluded; local runtime state + secrets excluded.
+# ═══════════════════════════════════════════════════════════════
+
+# ── IP / proprietary content (NEVER publish) ───────────────────
+# core-skills: third-party skill libraries (308M, embedded .git repos)
+# documents: internal design docs & review reports
+core-skills/
+documents/
+
+# ── Secrets & credentials (NEVER commit) ──────────────────────
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+credentials/
+**/service-account*.json
+**/firebase-adminsdk*.json
+
+# ── Dependencies (generated) ──────────────────────────────────
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.uv/
+.pub-cache/
+
+# ── IDE / Editor / OS ─────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+
+# ── Build / Generated code ────────────────────────────────────
+dist/
+build/
+*.tsbuildinfo
+*.freezed.dart
+*.g.dart
+
+# ── Ruflo harness runtime (local state — NEVER commit) ────────
+.claude-flow/
+.agents/
+.swarm/
+.mcp.json
+agentdb.rvf
+agentdb.rvf.lock
+.claude/helpers/
+.claude/settings.json
+.claude/settings.local.json
+
+# ── MCP credentials (user-specific) ───────────────────────────
+agent-v01/mcp/**/.env
+agent-v01/mcp/**/*.json.local
+agent-v01/mcp/**/*.local.json
+
+# ── BMAD generated / workspace state ──────────────────────────
+_bmad/
+_bmad_old/
+projects/**/.sdlc-automation-agent/
+projects/**/cost-state.json
+
+# ── Test artifacts ────────────────────────────────────────────
+coverage/
+*.lcov
+
+# ── Git internals (defense-in-depth for nested clones) ────────
+.git/
+.gitmodules
+
+# ── Temporary files ───────────────────────────────────────────
+*.tmp
+*.bak
+*.orig

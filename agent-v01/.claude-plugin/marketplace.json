@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "nexus-agent-kernel-marketplace",
+  "description": "Nexus Agent Kernel — personas, protocols, tech stacks, skills, and slash-command pipeline for full SDLC automation with execution harness.",
+  "owner": {
+    "name": "Nexus Engineering"
+  },
+  "plugins": [
+    {
+      "name": "nexus-agent-kernel",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "description": "Nexus Agent Kernel: 8 personas (PM, Analyst, Architect, Engineer, UX, Tech Writer, Reviewer, Orchestrator), 9 production protocols, 22 technology stacks, 500+ skills from 5 libraries, and 6 slash commands (/discover /spec /arch-design /plan /build /review) with Ruflo execution harness.",
+      "license": "MIT",
+      "keywords": ["agents", "sdlc", "skills", "protocols", "flutter", "mobile", "review", "kernel"]
+    }
+  ]
+}

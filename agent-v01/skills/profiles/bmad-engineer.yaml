@@ -1,0 +1,67 @@
+---
+persona: bmad-engineer
+phases:
+- implementation
+core_skills: []
+additional_skills:
+- angular-architect
+- cli-developer
+- cpp-pro
+- django-expert
+- dotnet-core-expert
+- embedded-systems
+- fastapi-expert
+- fine-tuning-expert
+- game-developer
+- javascript-pro
+- laravel-specialist
+- mcp-developer
+- pandas-pro
+- php-pro
+- playwright-expert
+- rails-expert
+- rust-engineer
+- salesforce-developer
+- shopify-expert
+- spark-engineer
+- sql-pro
+- terraform-engineer
+- vue-expert-js
+- websocket-engineer
+- wordpress-pro
+conditional_skills:
+  graphql: supplements/graphql
+  terraform: stacks/cloud/terraform
+  typescript: stacks/frontend/typescript-azure-sdk
+  azure-sdk: stacks/backend/{lang}/azure-sdk
+  supabase: supplements/database-design
+  stripe: supplements/database-design
+  multi-agent: supplements/ai-agents/multi-agent-orchestration
+  fine-tune: supplements/ai-agents/llm-fine-tuning-guide
+  voice: supplements/ai-agents/voice-ai-integration
+  rag: supplements/ai-agents/rag-agent-builder
+  stacks:
+  - nestjs
+  - spring-boot
+  - java
+  - golang
+  - dot-net
+  - python
+  - react
+  - nextjs
+  - vue
+  - nuxt
+  - ui-ux
+  - flutter
+  - swift-ui
+  - android
+  - kotlin-compose
+  - react-native
+  - aws
+  - azure
+  - langchain
+  - mlflow
+  - ml-agents
+  - context-engineering
+total_skills: 25
+load_strategy: lazy — load SKILL.md only when task matches

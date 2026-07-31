@@ -1,9 +1,0 @@
-{
-  "name": "stack-mobile",
-  "description": "Mobile development skills — React Native, Flutter, Swift/iOS, Kotlin/Android, mobile CI/CD",
-  "version": "1.0.0",
-  "author": { "name": "Hano Engineering" },
-  "license": "MIT",
-  "keywords": ["mobile", "react-native", "flutter", "swift", "kotlin", "ios", "android"],
-  "skills": "./skills"
-}

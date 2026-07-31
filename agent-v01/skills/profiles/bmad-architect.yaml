@@ -1,0 +1,27 @@
+---
+persona: bmad-architect
+phases:
+- solutioning
+core_skills:
+- api-designer
+- architecture-designer
+- cloud-architect
+- microservices-architect
+additional_skills:
+- atlassian-mcp
+- chaos-engineer
+- database-optimizer
+- devops-engineer
+- graphql-architect
+- kubernetes-specialist
+- legacy-modernizer
+- monitoring-expert
+- postgres-pro
+- sre-engineer
+- terraform-engineer
+conditional_skills:
+  graphql: supplements/graphql
+  supabase: supplements/database-design
+  serverless: supplements/system-design/event-driven-serverless-systems
+total_skills: 15
+load_strategy: lazy — load SKILL.md only when task matches

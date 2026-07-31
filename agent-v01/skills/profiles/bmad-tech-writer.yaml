@@ -1,0 +1,10 @@
+---
+persona: bmad-tech-writer
+phases:
+- documentation
+core_skills:
+- code-documenter
+additional_skills: []
+conditional_skills: {}
+total_skills: 1
+load_strategy: lazy — load SKILL.md only when task matches

@@ -1,0 +1,26 @@
+{
+  "role": "code-reviewer",
+  "backend": "claude",
+  "model": "deepseek-v4-flash",
+  "artifacts": [
+    "BMAD-REVIEW-REPORT.yaml.md"
+  ],
+  "metrics": {
+    "lenses_applied": 4,
+    "files_reviewed": 860,
+    "yaml_files_validated": 860,
+    "findings_total": 3,
+    "findings_critical": 0,
+    "findings_high": 0,
+    "findings_medium": 1,
+    "findings_low": 2,
+    "fixes_applied": 2,
+    "followup_required": 1
+  },
+  "verification_commands": [
+    "ruby validate-yaml.rb",
+    "ruby -ryaml -e \"YAML.load_file('SKILL-INDEX.yaml')\"",
+    "validate-structure.sh"
+  ],
+  "completed_at": "2026-07-31T00:00:00Z"
+}

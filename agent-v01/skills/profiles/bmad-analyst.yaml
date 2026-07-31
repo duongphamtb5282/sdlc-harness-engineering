@@ -1,0 +1,12 @@
+---
+persona: bmad-analyst
+phases:
+- analysis
+core_skills:
+- debugging-wizard
+additional_skills:
+- feature-forge
+- legacy-modernizer
+conditional_skills: {}
+total_skills: 3
+load_strategy: lazy — load SKILL.md only when task matches

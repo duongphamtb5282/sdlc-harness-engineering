@@ -1,0 +1,129 @@
+---
+router:
+  bmad-engineer:
+    implementation:
+      stacks:
+        nestjs: claude-skills/nestjs-expert
+        spring-boot: claude-skills/spring-boot-engineer
+        java: claude-skills/java-architect
+        golang: claude-skills/golang-pro
+        dot-net: claude-skills/csharp-developer
+        python: claude-skills/python-pro
+        react: claude-skills/react-expert
+        nextjs: claude-skills/nextjs-developer
+        vue: claude-skills/vue-expert
+        nuxt: claude-skills/vue-expert
+        ui-ux: claude-skills/fullstack-guardian
+        flutter: claude-skills/flutter-expert
+        swift-ui: claude-skills/swift-expert
+        android: claude-skills/kotlin-specialist
+        kotlin-compose: claude-skills/kotlin-specialist
+        react-native: claude-skills/react-native-expert
+        aws: claude-skills/cloud-architect
+        azure: claude-skills/cloud-architect
+        langchain: claude-skills/rag-architect
+        mlflow: claude-skills/ml-pipeline
+        ml-agents: claude-skills/ml-pipeline
+        context-engineering: claude-skills/prompt-engineer
+      additional:
+      - angular-architect
+      - javascript-pro
+      - playwright-expert
+      - fastapi-expert
+      - django-expert
+      - rails-expert
+      - laravel-specialist
+      - php-pro
+      - dotnet-core-expert
+      - rust-engineer
+      - cpp-pro
+      - sql-pro
+      - pandas-pro
+      - spark-engineer
+      - terraform-engineer
+      - websocket-engineer
+      - mcp-developer
+      - cli-developer
+      - game-developer
+      - embedded-systems
+      - fine-tuning-expert
+      - vue-expert-js
+      - shopify-expert
+      - wordpress-pro
+      - salesforce-developer
+      conditional:
+        graphql: supplements/graphql
+        terraform: stacks/cloud/terraform
+        typescript: stacks/frontend/typescript-azure-sdk
+        azure-sdk: stacks/backend/{lang}/azure-sdk
+        supabase: supplements/database-design
+        stripe: supplements/database-design
+        multi-agent: supplements/ai-agents/multi-agent-orchestration
+        fine-tune: supplements/ai-agents/llm-fine-tuning-guide
+        voice: supplements/ai-agents/voice-ai-integration
+        rag: supplements/ai-agents/rag-agent-builder
+  bmad-architect:
+    solutioning:
+      core:
+      - architecture-designer
+      - api-designer
+      - microservices-architect
+      - cloud-architect
+      additional:
+      - database-optimizer
+      - devops-engineer
+      - graphql-architect
+      - kubernetes-specialist
+      - monitoring-expert
+      - postgres-pro
+      - sre-engineer
+      - chaos-engineer
+      - terraform-engineer
+      - legacy-modernizer
+      - atlassian-mcp
+      conditional:
+        graphql: supplements/graphql
+        supabase: supplements/database-design
+        serverless: supplements/system-design/event-driven-serverless-systems
+  bmad-review:
+    review:
+      core:
+      - code-reviewer
+      - security-reviewer
+      - test-master
+      additional:
+      - fullstack-guardian
+      - secure-code-guardian
+      - sre-engineer
+      - chaos-engineer
+      security:
+      - security-and-hardening (SDLC)
+  bmad-analyst:
+    analysis:
+      core:
+      - debugging-wizard
+      additional:
+      - feature-forge
+      - legacy-modernizer
+  bmad-product-manager:
+    planning:
+      core:
+      - spec-miner
+      additional:
+      - feature-forge
+      - the-fool
+  bmad-tech-writer:
+    documentation:
+      core:
+      - code-documenter
+  bmad-ux-designer:
+    design:
+      core:
+      - fullstack-guardian
+  bmad-method:
+    orchestration:
+      core: []
+      tools:
+      - bmad-help
+      - bmad-party-mode
+      - skill-maker (production-grade)

@@ -1,7 +1,0 @@
-{
-  "name": "ecc-skills",
-  "description": "ECC (Everything Claude Code) extended skills — brand, content, competitive analysis, deep research, TDD, verification loops, MCP patterns, and more",
-  "version": "1.0.0",
-  "keywords": ["ecc", "brand", "content", "research", "tdd", "mcp"],
-  "skills": "./skills"
-}

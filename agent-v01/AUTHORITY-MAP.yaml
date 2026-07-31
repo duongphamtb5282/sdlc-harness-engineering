@@ -1,0 +1,101 @@
+# Authority Map -- Priority Levels and Overlap Resolution
+# Defines the 5 priority levels and how to resolve conflicts between skills.
+
+## Priority Levels
+
+priority_levels:
+  1:
+    name: Critical
+    description: "Security, compliance, data integrity. Blocks all other work."
+    artifacts:
+      - security-findings
+      - compliance-audits
+      - data-migration-plans
+    authority: compliance-engineer
+
+  2:
+    name: High
+    description: "Architecture, contracts, infrastructure. Expensive to change post-implementation."
+    artifacts:
+      - architecture-decision-records
+      - api-contracts
+      - data-models
+      - infrastructure-config
+      - terraform-plans
+    authority: solution-architect (ADRs, API, data) / platform-engineer (infra)
+
+  3:
+    name: Normal
+    description: "Implementation code, test suites, documentation. Standard development work."
+    artifacts:
+      - implementation-code
+      - test-suites
+      - documentation
+      - runbooks
+    authority: software-engineer (code) / quality-engineer (tests) / technical-writer (docs)
+
+  4:
+    name: Low
+    description: "Code quality suggestions, performance tips, best practices."
+    artifacts:
+      - code-review-findings
+      - performance-suggestions
+    authority: code-reviewer
+
+  5:
+    name: Informational
+    description: "References, research, exploration results. No authority binding."
+    artifacts:
+      - research-notes
+      - reference-links
+      - exploration-findings
+    authority: none (informational)
+
+## Overlap Resolution Rules
+
+overlap_resolution:
+  same_file_line:
+    rule: "Keep highest severity classification from any overlapping finding"
+    example: "CE rates Critical, CR rates same file:line as High -> Keep Critical"
+
+  same_file_diff_line:
+    rule: "Keep both findings, attribute each to its authoritative skill"
+    example: "CR flags code smell on line 42, CE flags secret exposure on line 87 -> Both kept"
+
+  diff_file_same_concern:
+    rule: "Cross-reference instead of duplicating"
+    example: "CR writes 'See CE findings for OWASP analysis' instead of performing own OWASP review"
+
+  scope_conflict:
+    rule: "Broader scope wins for system-level decisions, narrower scope wins for implementation details"
+    example: "Architect says use PostgreSQL, engineer wants SQLite for local dev -> Architect wins (system constraint), engineer chooses ORM (implementation detail)"
+
+## Agent Boundaries
+
+agent_boundaries:
+  compliance_engineer_vs_code_reviewer:
+    compliance_engineer:
+      authority: OWASP Top 10, STRIDE, pentesting, PII, encryption, regulatory
+    code_reviewer:
+      authority: SOLID, DRY, performance, test quality, architecture conformance
+      restriction: Does NOT perform security review. References compliance-engineer findings.
+
+  product_manager_vs_solution_architect:
+    product_manager:
+      authority: WHAT to build (requirements, stories, acceptance criteria)
+    solution_architect:
+      authority: HOW to build (architecture, stack, API contracts, data models)
+      restriction: Does NOT change requirements. Flags gaps back to PM.
+
+  platform_engineer_unified:
+    description: "Platform engineer owns BOTH infrastructure provisioning AND reliability engineering"
+    scope:
+      - CI/CD pipelines
+      - Container orchestration
+      - Monitoring
+      - SLO/SLI definitions
+      - Error budget policy
+      - Chaos engineering
+      - Incident management
+      - Runbooks
+      - Capacity planning

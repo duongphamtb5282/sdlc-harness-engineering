@@ -1,0 +1,31 @@
+# https://dart.dev/guides/libraries/private-files
+# Created by `dart pub`
+.dart_tool/
+pubspec.lock
+
+# Claude Code — commit shared config (settings.json, skills/, agents/, commands/),
+# but keep personal/local overrides out of version control.
+**/.claude/settings.local.json
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Mac
+.DS_Store
+
+# Coverage
+coverage/
+
+# Validation output from the validate-skill command
+validation/
+
+# Gas Town (added by gt)
+.runtime/
+.logs/
+__pycache__/
+state.json
+CLAUDE.md
+CLAUDE.local.md

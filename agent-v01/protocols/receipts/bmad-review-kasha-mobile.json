@@ -1,0 +1,24 @@
+{
+  "role": "code-reviewer",
+  "backend": "claude",
+  "model": "deepseek-v4-flash",
+  "artifacts": [
+    "BMAD-REVIEW-REPORT.md",
+    "bmad-review-kasha-mobile.json"
+  ],
+  "metrics": {
+    "lenses_applied": 4,
+    "findings_total": 53,
+    "findings_critical": 7,
+    "findings_high": 17,
+    "findings_medium": 15,
+    "findings_low": 14,
+    "files_reviewed": 85,
+    "lenses": ["quality", "security", "architecture", "dependency"]
+  },
+  "verification_commands": [
+    "grep -c 'C-0[1-7]' BMAD-REVIEW-REPORT.md",
+    "grep -c 'H-0[0-9]' BMAD-REVIEW-REPORT.md"
+  ],
+  "completed_at": "2026-07-31T00:00:00Z"
+}

@@ -1,0 +1,42 @@
+# MCP-Agent Mapping
+# Maps persona agents to MCP servers they may use.
+
+mcp_servers:
+  slack:
+    category: communications
+    allows: [bmad-product-manager, bmad-analyst, bmad-architect]
+    purpose: "Notify stakeholders, share updates, request feedback"
+
+  github:
+    category: communications
+    allows: [all]
+    purpose: "PR management, issue tracking, code hosting"
+
+  figma:
+    category: design
+    allows: [bmad-ux-designer, bmad-product-manager, bmad-architect]
+    purpose: "Design system access, component specs, design review"
+
+  confluence:
+    category: knowledge-base
+    allows: [bmad-analyst, bmad-product-manager, bmad-tech-writer]
+    purpose: "Documentation, wiki, knowledge base queries"
+
+  datadog:
+    category: observability
+    allows: [bmad-engineer, bmad-architect]
+    purpose: "Metrics, monitoring, observability data"
+
+  jira:
+    category: project-management
+    allows: [bmad-product-manager, bmad-engineer]
+    purpose: "Issue tracking, sprint management, backlog"
+
+# Default permissions
+default_policy:
+  allow: [github]
+  require_confirmation:
+    - slack
+    - figma
+    - jira
+  deny: []

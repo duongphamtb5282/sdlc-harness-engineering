@@ -1,0 +1,30 @@
+# Dart/Flutter
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+
+# OS files
+.DS_Store
+
+# Local Agent Configurations (Machine specific)
+.agent.md
+
+# You might want to ignore pubspec.lock if this is a library package
+# pubspec.lock
+
+# Logs
+.agents/*.log
+
+# Dynamic evaluation workspace directories (convention derived from the skill-creator skill: https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md)
+# (e.g. definition-of-done-workspace/ containing outputs, transcripts, timing, and grading JSONs)
+.agents/skills/*-workspace/
+skills/*-workspace/
+

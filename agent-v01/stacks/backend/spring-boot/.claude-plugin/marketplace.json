@@ -1,0 +1,13 @@
+{
+  "name": "spring-tools",
+  "owner": {
+    "name": "Amplicode Agent Tools"
+  },
+  "plugins": [
+    {
+      "name": "spring-tools",
+      "source": "./",
+      "description": "Best skills for Spring Boot development"
+    }
+  ]
+}

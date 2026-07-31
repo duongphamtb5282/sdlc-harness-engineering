@@ -1,7 +1,0 @@
-{
-  "name": "stack-dotnet",
-  "description": ".NET ecosystem skills — dotnet-core, ASP.NET Core, Blazor, MAUI, EF Core, MSBuild, NuGet, testing, diagnostics, upgrade patterns, template engine, AI integration",
-  "version": "1.0.0",
-  "keywords": ["dotnet", "csharp", "aspnetcore", "blazor", "maui", "efcore"],
-  "skills": "./skills"
-}
