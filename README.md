@@ -98,6 +98,40 @@ User request
   → Review findings loop back into /plan (loop-protocol)
 ```
 
+### Pipeline Flow — stages, gates, artifacts
+
+Every stage gates on user approval before its artifact flows downstream. No artifact passes a gate unapproved; no stage starts before its gate is met.
+
+```mermaid
+graph LR
+    A["/discover"] --> B["one-pager · docs/ideas/{name}.md"]
+    B -->|"GATE 1: approved"| C["deep-spec pass · 7 sections"]
+    C --> D["deep-spec · docs/deep-specs/{name}.md"]
+    D -->|"GATE 2: approved"| E["/spec"]
+    E --> F["SPEC.md · stories, ACs, roadmap M1…Mn"]
+    F --> G["/arch-design"]
+    G --> H["ADRs + trade-offs + diagrams"]
+    H --> I["/plan"]
+    I --> J["tasks/plan.md + tasks/todo.md"]
+    J --> K["/qa"]
+    K --> L["docs/qa/test-cases.md"]
+    L --> M["/build"]
+    M --> N["code + tests"]
+    N --> O["/review"]
+    O -->|"findings loop back"| I
+```
+
+| Stage | Command | Persona | Inputs | Key activity | Gate | Outputs → consumed by |
+|-------|---------|---------|--------|--------------|------|------------------------|
+| Discovery | `/discover` | Mary (bmad-analyst) | raw idea | idea-refine (diverge → converge → sharpen), spec-first framing | **G1:** one-pager approved | `docs/ideas/{name}.md` → deep-spec, `/spec` |
+| Deep-spec | inside `/discover` | Mary + `deep-spec` skill | approved one-pager | interactive problem-space elicitation — flows, edges, error matrix, NFRs, AC seeds, boundaries, open questions; `[ASSUMPTION]` tagging | **G2:** deep-spec approved | `docs/deep-specs/{name}.md` → `/spec` (inherits), `/arch-design` (open questions) |
+| Specification | `/spec` | John (bmad-product-manager) | idea doc + deep-spec | TDD-style stories (each AC testable, RED test named), boundaries, **Roadmap & Timeline (M1…Mn)** | user approval | `SPEC.md` → `/arch-design`, `/plan`, `/qa` |
+| Architecture | `/arch-design` | Winston (bmad-architect) | SPEC (direct entry OK) | ADRs, trade-off ledger (TO-N ↔ ADR), C4 + component + sequence diagrams, API contracts, boundary-safety check | user approval | `docs/adr/`, `docs/trade-offs/`, `docs/architecture/` (+ `.drawio`) → `/plan`, `/qa`, `/build` |
+| Planning | `/plan` | PM / analyst | SPEC + architecture + trade-offs | dependency graph, vertical slices, checkpoints, risk ordering | user approval | `tasks/plan.md`, `tasks/todo.md` → `/qa`, `/build` |
+| QA test cases | `/qa` | QA engineer | tasks + SPEC | per-AC test cases (Given/When/Then), coverage map, fixtures, risk-based ordering | user approval | `docs/qa/test-cases.md` → `/build` (RED tests) |
+| Build | `/build` | Amelia (bmad-engineer) | tasks + test cases | TDD RED → GREEN → REFACTOR per task; per-task commits | tests green per task | code + tests, `tests/test-summary.md` → `/review` |
+| Review | `/review` | bmad-review | code + artifacts | 4-lens review — Quality, Security, Architecture, Dependency | 0 Critical findings | `BMAD-REVIEW-REPORT.md`; findings loop into `/plan` (loop-protocol) |
+
 ---
 
 ## Technology Stack
@@ -196,7 +230,7 @@ your-project/
 | Command | Persona | Purpose | Key SDLC Skills | Produces |
 |---------|---------|---------|-----------------|----------|
 | `/discover` 🧠 | bmad-analyst (Mary) | **Idea → concept.** Refines raw ideas; surfaces assumptions; spec-frames output; mines problem-space depth for approved ideas. | idea-refine, spec-driven-development, deep-spec | `docs/ideas/{name}.md`, `docs/deep-specs/{name}.md` (approved ideas) |
-| `/spec` 📋 | bmad-product-manager (John) | **Concept → contract.** TDD-style user stories — each AC testable, each story names its RED test. | spec-driven-development, test-driven-development | `SPEC.md` |
+| `/spec` 📋 | bmad-product-manager (John) | **Concept → contract.** TDD-style user stories — each AC testable, each story names its RED test. | spec-driven-development, test-driven-development | `SPEC.md` (objectives, stories, ACs, roadmap & timeline M1…Mn) |
 | `/arch-design` 🏛 | bmad-architect (Winston) | **Contract → design.** ADRs, trade-off document, API contracts, data models, Draw.io. Direct entry supported (no SPEC needed). | api-and-interface-design, sparc-methodology, bmad-architecture | `docs/adr/*.md`, `docs/trade-offs/*.md`, `docs/architecture/*.md`, `*.drawio` |
 | `/plan` 📊 | bmad-analyst/PM | **Design → tasks.** Dependency-ordered, vertically-sliced tasks. | planning-and-task-breakdown, bmad-create-epics-and-stories | `tasks/plan.md`, `tasks/todo.md` |
 | `/qa` 🧪 | QA engineer (bmad-qa) | **Tasks → test cases.** Per-story unit/API/E2E test cases from acceptance criteria. | bmad-qa-generate-e2e-tests, test-master, test-driven-development, browser-testing-with-devtools | `docs/qa/test-cases.md` (coverage map) |
@@ -222,6 +256,22 @@ your-project/
 **Deep-spec is discovery's depth layer.** After the `/discover` one-pager is approved (gate 1), the bmad-analyst runs an interactive elicitation pass that mines **problem-space depth** from the idea owner — everything `/spec` and `/qa` would otherwise have to re-ask — into `docs/deep-specs/{name}.md` (gate 2). `/spec` then validates and inherits it; it never re-elicts.
 
 *Design:* `docs/architecture/deep-spec-discovery.md` · ADR-0001…0005 · `docs/trade-offs/deep-spec-discovery-trade-offs.md` · `docs/qa/test-cases.md`
+
+### Discovery flow — two gates
+
+```mermaid
+graph TD
+    U["User"] --> D["/discover"]
+    D --> IR["idea-refine: diverge → converge → sharpen"]
+    IR --> OP["one-pager · docs/ideas/{name}.md"]
+    OP -->|"GATE 1"| G1{"approved?"}
+    G1 -->|"no"| X["dead — cheap, no depth tax"]
+    G1 -->|"yes"| DS["deep-spec pass · 7 sections, interactive"]
+    DS --> SD["deep-spec · docs/deep-specs/{name}.md"]
+    SD -->|"GATE 2"| G2{"approved?"}
+    G2 -->|"no"| DS
+    G2 -->|"yes"| SP["/spec — validates + inherits, no re-elicit"]
+```
 
 ### The seven sections
 
@@ -372,7 +422,15 @@ nexus-agent-kernel/
 ├── .mcp.json                  # Ruflo MCP server config
 ├── CLAUDE.md                  # Project rules
 ├── documents/                 # Architecture docs (harness-knowledge.md, etc.)
-└── agent-v01/
+├── docs/                      # Pipeline artifacts (per stage, gated)
+│   ├── ideas/                 # one-pagers — from /discover (G1)
+│   ├── deep-specs/            # problem-space depth — from deep-spec pass (G2)
+│   ├── adr/                   # architecture decisions — from /arch-design
+│   ├── trade-offs/            # decision ledger (TO-N ↔ ADR)
+│   ├── architecture/          # design docs + .drawio diagrams
+│   └── qa/                    # test cases + coverage map — from /qa
+├── tasks/                     # plan.md + todo.md — from /plan
+├── agent-v01/
     ├── agents/                # 8 BMAD personas
     ├── protocols/             # 9 protocols (synced)
     ├── scripts/               # ALL scripts (install, start, validate, sync)
@@ -381,8 +439,13 @@ nexus-agent-kernel/
     ├── stacks/                # 22 technology stacks
     ├── supplements/           # 10 collections (incl. database-design)
     ├── references/            # templates + skill catalogs
-    ├── methodologies/         # bmad-method, ruflo/SPARC, general-sdlc
+    ├── methodologies/         # bmad-method, ruflo/SPARC, general-sdlc, bmad-builder
     ├── core-skills/
+    │   ├── claude-skills/     # 66 domain experts
+    │   ├── awesome-copilot/   # 353 dev skills in 19 categories (_categorized/)
+    │   ├── agentic-awesome/   # 1,198 skills in 16 categories
+    │   ├── claude-software-skills/  # 55 reference guides
+    │   ├── ruflo-skills/      # 21 swarm/memory/SPARC skills
     │   └── ...                # stack repos, vendor skills
     ├── hooks/                 # lifecycle hooks
     ├── mcp/                   # MCP server configs
@@ -420,4 +483,7 @@ nexus-agent-kernel/
 ---
 
 ## 12. Further Reading
-https://github.com/deepseek-ai/DeepSpec
+
+| Document | Description |
+|----------|-------------|
+| `documents/harness-knowledge.md` | Full harness architecture + how to use + memory fix |
