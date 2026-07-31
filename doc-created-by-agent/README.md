@@ -27,4 +27,4 @@ ideas/ → SPEC → adr/ + trade-offs/ + architecture/ → tasks/ → qa/ → co
 
 **Source:** `documents/saas.md` (Multi-Tenant Healthcare SaaS — full design: market research, PRD, ADRs, C4, user stories, cost estimates).
 
-*Generated 2026-07-31 by the Nexus Agent Kernel (BMAD-METHOD, customized).*
+*Generated 2026-07-31 by the Nexus Agent Kernel.*
